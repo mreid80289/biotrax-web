@@ -461,6 +461,20 @@ function HowItWorks() {
 }
 
 // ─────────────────────────── The Coach ───────────────────────────
+function PhoneWithLabel({ src, label, width, tilt }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+      <IPhone src={src} width={width} tilt={tilt} />
+      <div style={{
+        fontFamily: fontMono, fontSize: 11, fontWeight: 600, letterSpacing: 1.5,
+        color: C.inkMuted, textTransform: 'uppercase',
+        border: `1px solid ${C.borderStrong}`, borderRadius: 999,
+        padding: '5px 14px',
+      }}>{label}</div>
+    </div>
+  );
+}
+
 function CoachSection() {
   return (
     <section style={{ padding: '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
@@ -469,9 +483,10 @@ function CoachSection() {
         background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent 60%)',
         filter: 'blur(60px)', pointerEvents: 'none',
       }} />
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: 80, alignItems: 'center', position: 'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <IPhone src="/assets/coach.png" width={320} tilt={-2} />
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', position: 'relative' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 32, alignItems: 'flex-end' }}>
+          <PhoneWithLabel src="/assets/coach.png" label="Member" width={260} tilt={-3} />
+          <PhoneWithLabel src="/assets/Sponsor (2).jpg" label="Sponsor" width={260} tilt={3} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>THE COACH</div>
