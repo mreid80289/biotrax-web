@@ -20,8 +20,22 @@ const fontDisplay = '"Cormorant Garamond", "Times New Roman", Georgia, serif';
 const fontBody = '"Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
 const fontMono = '"JetBrains Mono", ui-monospace, Menlo, monospace';
 
+// ─────────────────────────── Responsive hook ───────────────────────────
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth <= breakpoint : false
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, [breakpoint]);
+  return isMobile;
+}
+
 // ─────────────────────────── iPhone frame ───────────────────────────
-function IPhone({ src, width = 280, alt, style = {}, shadow = true, tilt = 0, innerStyle = {}, imgStyle = {} }) {
+function IPhone({ src, width = 280, alt, style = {}, shadow = true, tilt = 0, innerStyle = {}, imgStyle = {}, eager = false }) {
   const aspect = 2796 / 1290;
   const height = width * aspect;
   const radius = width * 0.135;
@@ -55,11 +69,13 @@ function IPhone({ src, width = 280, alt, style = {}, shadow = true, tilt = 0, in
         <img
           src={src}
           alt={alt || ''}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          fetchpriority={eager ? 'high' : undefined}
           style={{
             width: '100%', height: '100%',
             objectFit: 'cover', objectPosition: 'top center',
             display: 'block',
-            imageRendering: '-webkit-optimize-contrast',
             ...imgStyle,
           }}
         />
@@ -146,6 +162,7 @@ function TiltPhone({ src, width = 360, alt }) {
           src={src}
           width={width}
           alt={alt}
+          eager
           innerStyle={{
             backgroundImage: `radial-gradient(circle at ${tilt.mx}% ${tilt.my}%, rgba(255,255,255,0.18), transparent 45%)`,
           }}
@@ -251,6 +268,20 @@ function Logo({ size = 28 }) {
 // ─────────────────────────── Nav ───────────────────────────
 function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  // Close menu on link tap
+  const closeAndScroll = (id) => {
+    setMenuOpen(false);
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 50);
+  };
+
+  const links = [
+    { l: 'The Coach', id: null },
+    { l: 'How It Works', id: 'how-it-works' },
+    { l: 'The App', id: null },
+    { l: 'Investors', id: null },
+  ];
 
   return (
     <nav style={{
@@ -259,7 +290,7 @@ function Nav() {
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
       borderBottom: `1px solid ${C.border}`,
-      padding: '14px 48px',
+      padding: isMobile ? '12px 20px' : '14px 48px',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       fontFamily: fontBody,
     }}>
@@ -267,32 +298,111 @@ function Nav() {
         <Logo size={26} />
         <span style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: C.ink }}>BioTrax</span>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-        {['The Coach', 'How It Works', 'The App', 'Investors'].map(l => (
-          <a key={l} href="#" style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>{l}</a>
-        ))}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <a href="#" style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>Sign in</a>
+
+      {!isMobile && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+            {links.map(({ l, id }) => (
+              <a key={l} href={id ? `#${id}` : '#'}
+                onClick={(e) => { if (id) { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); } }}
+                style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>{l}</a>
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <a href="#" style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>Sign in</a>
+            <button
+              onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{
+                background: C.green, color: '#04201a',
+                border: 'none', padding: '9px 18px', borderRadius: 999,
+                fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
+                fontFamily: fontBody,
+              }}>Join Waitlist</button>
+          </div>
+        </>
+      )}
+
+      {isMobile && (
         <button
-          onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => setMenuOpen(o => !o)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
           style={{
-            background: C.green, color: '#04201a',
-            border: 'none', padding: '9px 18px', borderRadius: 999,
-            fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
-            fontFamily: fontBody,
-          }}>Join Waitlist</button>
-      </div>
+            background: 'transparent', border: 'none', cursor: 'pointer',
+            width: 40, height: 40, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 5, padding: 0,
+          }}>
+          <span style={{
+            display: 'block', width: 22, height: 1.5, background: C.ink,
+            transition: 'transform 0.25s, opacity 0.25s',
+            transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none',
+          }} />
+          <span style={{
+            display: 'block', width: 22, height: 1.5, background: C.ink,
+            transition: 'opacity 0.2s',
+            opacity: menuOpen ? 0 : 1,
+          }} />
+          <span style={{
+            display: 'block', width: 22, height: 1.5, background: C.ink,
+            transition: 'transform 0.25s',
+            transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
+          }} />
+        </button>
+      )}
+
+      {isMobile && menuOpen && (
+        <div style={{
+          position: 'fixed', top: 64, left: 0, right: 0, bottom: 0,
+          background: 'rgba(10,13,12,0.98)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          padding: '32px 24px',
+          display: 'flex', flexDirection: 'column', gap: 4,
+          zIndex: 49,
+          animation: 'fadeIn 0.2s ease-out',
+        }}>
+          {links.map(({ l, id }) => (
+            <a
+              key={l}
+              href={id ? `#${id}` : '#'}
+              onClick={(e) => { if (id) { e.preventDefault(); closeAndScroll(id); } else { setMenuOpen(false); } }}
+              style={{
+                fontFamily: fontDisplay, fontSize: 32, fontWeight: 400,
+                color: C.ink, textDecoration: 'none',
+                padding: '16px 4px',
+                borderBottom: `1px solid ${C.border}`,
+                letterSpacing: -0.5,
+              }}>{l}</a>
+          ))}
+          <a href="#" onClick={() => setMenuOpen(false)}
+            style={{
+              fontFamily: fontBody, fontSize: 15, fontWeight: 500,
+              color: C.inkDim, textDecoration: 'none',
+              padding: '20px 4px 12px',
+            }}>Sign in</a>
+          <button
+            onClick={() => closeAndScroll('waitlist')}
+            style={{
+              marginTop: 16,
+              background: C.green, color: '#04201a',
+              border: 'none', padding: '16px 24px', borderRadius: 999,
+              fontSize: 16, fontWeight: 600, cursor: 'pointer',
+              fontFamily: fontBody,
+              boxShadow: `0 0 32px rgba(52,211,153,0.35)`,
+            }}>Join the Waitlist →</button>
+        </div>
+      )}
     </nav>
   );
 }
 
 // ─────────────────────────── Hero ───────────────────────────
 function Hero({ headline }) {
+  const isMobile = useIsMobile();
   return (
     <section style={{
       position: 'relative',
-      padding: '90px 48px 110px',
+      padding: isMobile ? '48px 20px 64px' : '90px 48px 110px',
       overflow: 'hidden',
     }}>
       <div style={{
@@ -302,13 +412,13 @@ function Hero({ headline }) {
       <div style={{
         position: 'relative',
         display: 'grid',
-        gridTemplateColumns: '1.05fr 0.95fr',
-        gap: 64,
+        gridTemplateColumns: isMobile ? '1fr' : '1.05fr 0.95fr',
+        gap: isMobile ? 40 : 64,
         alignItems: 'center',
         maxWidth: 1280,
         margin: '0 auto',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 20 : 28, order: isMobile ? 2 : 1 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start',
             border: `1px solid ${C.borderStrong}`, padding: '6px 12px', borderRadius: 999,
             fontFamily: fontMono, fontSize: 11, color: C.inkDim, letterSpacing: 0.4 }}>
@@ -318,10 +428,10 @@ function Hero({ headline }) {
           <h1 style={{
             margin: 0,
             fontFamily: fontDisplay,
-            fontSize: 84,
+            fontSize: isMobile ? 48 : 84,
             fontWeight: 400,
             lineHeight: 0.98,
-            letterSpacing: -1.5,
+            letterSpacing: isMobile ? -0.8 : -1.5,
             color: C.ink,
           }}>
             {headline.h1.map((part, i) => (
@@ -329,12 +439,12 @@ function Hero({ headline }) {
             ))}
           </h1>
           <p style={{
-            margin: 0, fontFamily: fontBody, fontSize: 17, lineHeight: 1.55,
+            margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 17, lineHeight: 1.55,
             color: C.inkDim, maxWidth: 480, fontWeight: 400,
           }}>
             {headline.sub}
           </p>
-          <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
             <button
               onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
@@ -352,21 +462,23 @@ function Hero({ headline }) {
                 cursor: 'pointer', fontFamily: fontBody,
               }}>See how it works</button>
           </div>
-          <div style={{ display: 'flex', gap: 28, marginTop: 16, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
+          <div style={{ display: 'flex', gap: isMobile ? 20 : 28, marginTop: 16, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
             {[
               ['100%', 'On-device data'],
               ['0', 'Daily check-ins'],
               ['1', 'Trusted sponsor'],
             ].map(([v, l]) => (
               <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <div style={{ fontFamily: fontDisplay, fontSize: 28, fontWeight: 400, color: C.ink, letterSpacing: -0.5 }}>{v}</div>
-                <div style={{ fontFamily: fontMono, fontSize: 10.5, color: C.inkMuted, letterSpacing: 0.5, textTransform: 'uppercase' }}>{l}</div>
+                <div style={{ fontFamily: fontDisplay, fontSize: isMobile ? 22 : 28, fontWeight: 400, color: C.ink, letterSpacing: -0.5 }}>{v}</div>
+                <div style={{ fontFamily: fontMono, fontSize: isMobile ? 9.5 : 10.5, color: C.inkMuted, letterSpacing: 0.5, textTransform: 'uppercase' }}>{l}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <TiltPhone src="/assets/home.png" width={360} alt="BioTrax wellness score home screen" />
+        <div style={{ order: isMobile ? 1 : 2, display: 'flex', justifyContent: 'center' }}>
+          <TiltPhone src="/assets/home.png" width={isMobile ? 240 : 360} alt="BioTrax wellness score home screen" />
+        </div>
       </div>
     </section>
   );
@@ -374,6 +486,7 @@ function Hero({ headline }) {
 
 // ─────────────────────────── What It Tracks ───────────────────────────
 function Tracks() {
+  const isMobile = useIsMobile();
   const items = [
     {
       kicker: '01 / SLEEP',
@@ -398,14 +511,14 @@ function Tracks() {
     },
   ];
   return (
-    <section style={{ padding: '120px 48px', borderTop: `1px solid ${C.border}` }}>
+    <section style={{ padding: isMobile ? '64px 20px' : '120px 48px', borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <SectionHeader
           kicker="WHAT IT WATCHES"
           title={[{ t: 'Three quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
           sub="Apple Watch and Screen Time API do the work in the background. You just live your day."
         />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginTop: 72 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 16 : 24, marginTop: isMobile ? 40 : 72 }}>
           {items.map((it) => (
             <div key={it.kicker} style={{
               border: `1px solid ${C.border}`, borderRadius: 24,
@@ -432,25 +545,26 @@ function Tracks() {
 
 // ─────────────────────────── How It Works ───────────────────────────
 function HowItWorks() {
+  const isMobile = useIsMobile();
   const steps = [
     { n: '01', t: 'Pair your watch', d: 'BioTrax pulls sleep, HRV and steps through HealthKit. No setup beyond one tap.' },
     { n: '02', t: 'Choose a sponsor', d: 'One person you trust. They get a quiet alert only if your score falls below 40.' },
     { n: '03', t: 'Live your life', d: 'No daily check-ins. The app learns your patterns and surfaces a nudge only when needed.' },
   ];
   return (
-    <section id="how-it-works" style={{ padding: '120px 48px', borderTop: `1px solid ${C.border}`, background: C.bgAlt }}>
+    <section id="how-it-works" style={{ padding: isMobile ? '64px 20px' : '120px 48px', borderTop: `1px solid ${C.border}`, background: C.bgAlt }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <SectionHeader
           kicker="HOW IT WORKS"
           title={[{ t: 'Set it once.\n' }, { t: 'It does the rest.', italic: true }]}
         />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, marginTop: 64 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 28 : 32, marginTop: isMobile ? 40 : 64 }}>
           {steps.map((s, i) => (
             <div key={s.n} style={{ position: 'relative', paddingTop: 28 }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: C.borderStrong }} />
               <div style={{ position: 'absolute', top: -4, left: 0, width: 80, height: 8, background: C.green, opacity: i === 0 ? 1 : 0.3 }} />
               <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>STEP {s.n}</div>
-              <h3 style={{ margin: '12px 0 12px', fontFamily: fontDisplay, fontSize: 36, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{s.t}</h3>
+              <h3 style={{ margin: '12px 0 12px', fontFamily: fontDisplay, fontSize: isMobile ? 28 : 36, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{s.t}</h3>
               <p style={{ margin: 0, fontFamily: fontBody, fontSize: 15, lineHeight: 1.55, color: C.inkDim, maxWidth: 320 }}>{s.d}</p>
             </div>
           ))}
@@ -476,24 +590,25 @@ function PhoneWithLabel({ src, label, width, tilt }) {
 }
 
 function CoachSection() {
+  const isMobile = useIsMobile();
   return (
-    <section style={{ padding: '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
+    <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', top: '20%', left: '10%', width: 500, height: 500,
         background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent 60%)',
         filter: 'blur(60px)', pointerEvents: 'none',
       }} />
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', position: 'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 32, alignItems: 'flex-end' }}>
-          <PhoneWithLabel src="/assets/coach.png" label="Member" width={260} tilt={-3} />
-          <PhoneWithLabel src="/assets/sponsor.jpg" label="Sponsor" width={260} tilt={3} />
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 40 : 80, alignItems: 'center', position: 'relative' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 14 : 32, alignItems: 'flex-end', order: isMobile ? 2 : 1 }}>
+          <PhoneWithLabel src="/assets/coach.png" label="Member" width={isMobile ? 150 : 260} tilt={-3} />
+          <PhoneWithLabel src="/assets/sponsor.jpg" label="Sponsor" width={isMobile ? 150 : 260} tilt={3} />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 18 : 24, order: isMobile ? 1 : 2 }}>
           <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>THE COACH</div>
-          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
+          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
             A gentle voice <span style={{ fontStyle: 'italic', color: C.green }}>when the patterns slip.</span>
           </h2>
-          <p style={{ margin: 0, fontFamily: fontBody, fontSize: 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
+          <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
             Loose check-in routines. One-tap reassurance. The Coach surfaces a single small action — a walk, a breath, a friend's name — never a guilt-inducing streak.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
@@ -519,15 +634,16 @@ function CoachSection() {
 
 // ─────────────────────────── Weekly Report ───────────────────────────
 function WeeklyReport() {
+  const isMobile = useIsMobile();
   return (
-    <section style={{ padding: '140px 48px', borderTop: `1px solid ${C.border}` }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 80, alignItems: 'center' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 0.9fr', gap: isMobile ? 40 : 80, alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 18 : 24, order: isMobile ? 2 : 1 }}>
           <div style={{ fontFamily: fontMono, fontSize: 12, color: C.blue, letterSpacing: 1, fontWeight: 600 }}>WEEKLY BEHAVIOURAL REPORT</div>
-          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
+          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
             Seven days of patterns, <span style={{ fontStyle: 'italic', color: C.blue }}>read like a story.</span>
           </h2>
-          <p style={{ margin: 0, fontFamily: fontBody, fontSize: 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
+          <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
             Every Sunday, BioTrax compiles a private report on your stress, sleep, location and connection. No charts to decode — just plain language about how the week actually went.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
@@ -544,8 +660,8 @@ function WeeklyReport() {
             ))}
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <IPhone src="/assets/report.png" width={320} tilt={2} />
+        <div style={{ display: 'flex', justifyContent: 'center', order: isMobile ? 1 : 2 }}>
+          <IPhone src="/assets/report.png" width={isMobile ? 240 : 320} tilt={2} />
         </div>
       </div>
     </section>
@@ -554,28 +670,29 @@ function WeeklyReport() {
 
 // ─────────────────────────── Caregivers ───────────────────────────
 function Caregivers() {
+  const isMobile = useIsMobile();
   return (
-    <section style={{ padding: '120px 48px', borderTop: `1px solid ${C.border}`, background: C.bgAlt }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+    <section style={{ padding: isMobile ? '64px 20px' : '120px 48px', borderTop: `1px solid ${C.border}`, background: C.bgAlt }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: isMobile ? 18 : 24 }}>
         <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>FOR THE PEOPLE WHO CARE</div>
-        <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 72, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1.2, color: C.ink, maxWidth: 900 }}>
+        <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 72, fontWeight: 400, lineHeight: 1.0, letterSpacing: isMobile ? -0.8 : -1.2, color: C.ink, maxWidth: 900 }}>
           They get a heads-up. <span style={{ fontStyle: 'italic', color: C.green }}>You stay in control.</span>
         </h2>
-        <p style={{ margin: 0, fontFamily: fontBody, fontSize: 17, lineHeight: 1.55, color: C.inkDim, maxWidth: 600 }}>
+        <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 17, lineHeight: 1.55, color: C.inkDim, maxWidth: 600 }}>
           Sponsors see a gentle overview — patterns, not raw data. They get a quiet alert if your wellness score drops below 40 — with a tap to reach out.
         </p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 48, width: '100%', textAlign: 'left' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24, marginTop: isMobile ? 28 : 48, width: '100%', textAlign: 'left' }}>
           {[
             { who: "IF YOU'RE THE USER", t: 'No surveillance.', items: ['No daily mood prompts', 'No streaks to maintain', 'You choose what your sponsor sees', 'Pause sponsor sharing anytime'] },
             { who: "IF YOU'RE THE SPONSOR", t: 'An overview, not a feed.', items: ['A wellness score and status — updated when they sync', 'Patterns across sleep, stress, social and home', 'Send a gentle nudge in one tap', 'Only what they\'ve chosen to share'] },
           ].map((c, i) => (
             <div key={i} style={{
-              border: `1px solid ${C.border}`, borderRadius: 24, padding: 32,
+              border: `1px solid ${C.border}`, borderRadius: 24, padding: isMobile ? 24 : 32,
               background: C.bg, display: 'flex', flexDirection: 'column', gap: 14,
             }}>
               <div style={{ fontFamily: fontMono, fontSize: 11, color: C.green, letterSpacing: 1, fontWeight: 600 }}>{c.who}</div>
-              <div style={{ fontFamily: fontDisplay, fontSize: 36, fontWeight: 400, color: C.ink, letterSpacing: -0.5 }}>{c.t}</div>
+              <div style={{ fontFamily: fontDisplay, fontSize: isMobile ? 28 : 36, fontWeight: 400, color: C.ink, letterSpacing: -0.5 }}>{c.t}</div>
               <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, marginTop: 6 }}>
                 {c.items.map(x => (
                   <li key={x} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 10, fontFamily: fontBody, fontSize: 14.5, color: C.inkDim }}>
@@ -694,6 +811,7 @@ function Chip({ label, color }) {
 }
 
 function ScorePlayground() {
+  const isMobile = useIsMobile();
   const [sleep, setSleep] = useState(76);
   const [stress, setStress] = useState(35);
   const [social, setSocial] = useState(75);
@@ -724,7 +842,7 @@ function ScorePlayground() {
     : { dot: '#ef4444', text: 'Coach: Sponsor alert sent — check-in requested' };
 
   return (
-    <section style={{ padding: '140px 48px', borderTop: `1px solid ${C.border}`, background: C.bg, position: 'relative', overflow: 'hidden' }}>
+    <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, background: C.bg, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 50% 50% at 50% 30%, rgba(52,211,153,0.10), transparent 60%)',
@@ -736,28 +854,28 @@ function ScorePlayground() {
             fontFamily: fontMono, fontSize: 11, color: C.green, letterSpacing: 1, fontWeight: 600 }}>
             TRY IT YOURSELF
           </div>
-          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
+          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
             See your score <span style={{ fontStyle: 'italic', color: C.green }}>come to life.</span>
           </h2>
-          <p style={{ margin: 0, fontFamily: fontBody, fontSize: 16, color: C.inkDim, maxWidth: 540 }}>
+          <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, color: C.inkDim, maxWidth: 540 }}>
             Move the sliders and watch BioTrax think in real time. This is the exact colour logic and thresholds the app uses.
           </p>
         </div>
 
         <div style={{
-          marginTop: 56,
+          marginTop: isMobile ? 32 : 56,
           background: C.bgAlt,
           border: `1px solid ${C.border}`,
-          borderRadius: 28,
-          padding: 36,
+          borderRadius: isMobile ? 20 : 28,
+          padding: isMobile ? 20 : 36,
           display: 'flex', flexDirection: 'column', gap: 28,
           boxShadow: '0 30px 80px rgba(0,0,0,0.4)',
         }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 36, alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '220px 1fr', gap: isMobile ? 20 : 36, alignItems: 'center', textAlign: isMobile ? 'center' : 'left' }}>
             <ScoreRing value={total} tier={tier} tierColor={tierColor} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 1, fontWeight: 600 }}>BIOTRAX INSIGHT</div>
-              <div style={{ fontFamily: fontDisplay, fontSize: 24, fontStyle: 'italic', lineHeight: 1.3, color: C.ink, fontWeight: 400 }}>
+              <div style={{ fontFamily: fontDisplay, fontSize: isMobile ? 20 : 24, fontStyle: 'italic', lineHeight: 1.3, color: C.ink, fontWeight: 400 }}>
                 {insight}
               </div>
               <div style={{
@@ -767,7 +885,8 @@ function ScorePlayground() {
                 borderRadius: 12,
                 padding: '12px 16px',
                 display: 'flex', alignItems: 'center', gap: 10,
-                fontFamily: fontMono, fontSize: 12.5, color: C.inkDim,
+                fontFamily: fontMono, fontSize: isMobile ? 11.5 : 12.5, color: C.inkDim,
+                textAlign: 'left',
               }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: coachState.dot, boxShadow: `0 0 10px ${coachState.dot}`, flexShrink: 0 }} />
                 {coachState.text}
@@ -806,13 +925,14 @@ function ScorePlayground() {
 
 // ─────────────────────────── Privacy Strip ───────────────────────────
 function Privacy() {
+  const isMobile = useIsMobile();
   return (
-    <section style={{ padding: '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
-        <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 36, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5, color: C.ink, maxWidth: 480 }}>
+    <section style={{ padding: isMobile ? '48px 20px' : '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 24 : 40, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
+        <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 26 : 36, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5, color: C.ink, maxWidth: 480 }}>
           Your data <span style={{ fontStyle: 'italic', color: C.green }}>never leaves the device</span> — until you choose a sponsor.
         </h3>
-        <div style={{ display: 'flex', gap: 32 }}>
+        <div style={{ display: 'flex', gap: isMobile ? 16 : 32, flexWrap: 'wrap' }}>
           {['HealthKit', 'Screen Time API', 'CoreLocation', 'On-device ML'].map(t => (
             <div key={t} style={{ borderLeft: `1px solid ${C.borderStrong}`, paddingLeft: 14 }}>
               <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>{t}</div>
@@ -826,6 +946,7 @@ function Privacy() {
 
 // ─────────────────────────── Waitlist ───────────────────────────
 function Waitlist() {
+  const isMobile = useIsMobile();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -835,17 +956,17 @@ function Waitlist() {
   };
 
   return (
-    <section id="waitlist" style={{ padding: '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
+    <section id="waitlist" style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 60% 80% at 50% 50%, rgba(52,211,153,0.18), transparent 60%)',
       }} />
-      <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, position: 'relative' }}>
+      <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: isMobile ? 18 : 24, position: 'relative' }}>
         <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1.2, fontWeight: 600 }}>JOIN THE WAITLIST</div>
-        <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 80, fontWeight: 400, lineHeight: 0.98, letterSpacing: -1.5, color: C.ink }}>
+        <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 44 : 80, fontWeight: 400, lineHeight: 0.98, letterSpacing: isMobile ? -0.8 : -1.5, color: C.ink }}>
           The next thousand seats <span style={{ fontStyle: 'italic', color: C.green }}>open in spring.</span>
         </h2>
-        <p style={{ margin: 0, fontFamily: fontBody, fontSize: 16, color: C.inkDim, maxWidth: 480 }}>
+        <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, color: C.inkDim, maxWidth: 480 }}>
           Free during beta. iPhone + Apple Watch required. We'll write before billing ever starts.
         </p>
         {submitted ? (
@@ -858,7 +979,7 @@ function Waitlist() {
             You're on the list. We'll be in touch. ✓
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 8, marginTop: 16, width: '100%', maxWidth: 460 }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 12 : 8, marginTop: 16, width: '100%', maxWidth: 460 }}>
             <input
               type="email"
               placeholder="your@email.com"
@@ -889,10 +1010,11 @@ function Waitlist() {
 
 // ─────────────────────────── Footer ───────────────────────────
 function Footer() {
+  const isMobile = useIsMobile();
   return (
-    <footer style={{ padding: '60px 48px 40px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 40 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <footer style={{ padding: isMobile ? '40px 20px 32px' : '60px 48px 40px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '1.5fr 1fr 1fr 1fr', gap: isMobile ? 28 : 40 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, gridColumn: isMobile ? '1 / -1' : 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Logo size={28} />
             <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax</span>
@@ -914,7 +1036,7 @@ function Footer() {
           </div>
         ))}
       </div>
-      <div style={{ maxWidth: 1280, margin: '40px auto 0', paddingTop: 24, borderTop: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.4 }}>
+      <div style={{ maxWidth: 1280, margin: '40px auto 0', paddingTop: 24, borderTop: `1px solid ${C.border}`, display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 10 : 0, justifyContent: 'space-between', fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.4 }}>
         <div>© 2026 BIOTRAX HEALTH, INC.</div>
         <div>NOT A SUBSTITUTE FOR PROFESSIONAL CARE. IF IN CRISIS, CALL 988.</div>
       </div>
@@ -924,15 +1046,16 @@ function Footer() {
 
 // ─────────────────────────── Section Header ───────────────────────────
 function SectionHeader({ kicker, title, sub, align = 'left' }) {
+  const isMobile = useIsMobile();
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18, alignItems: align === 'center' ? 'center' : 'flex-start', textAlign: align }}>
       <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>{kicker}</div>
-      <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink, whiteSpace: 'pre-line', maxWidth: 800 }}>
+      <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: isMobile ? -0.6 : -1, color: C.ink, whiteSpace: 'pre-line', maxWidth: 800 }}>
         {title.map((p, i) => (
           <span key={i} style={p.italic ? { fontStyle: 'italic', color: C.green } : {}}>{p.t}</span>
         ))}
       </h2>
-      {sub && <p style={{ margin: 0, fontFamily: fontBody, fontSize: 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 600 }}>{sub}</p>}
+      {sub && <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 600 }}>{sub}</p>}
     </div>
   );
 }
