@@ -568,7 +568,7 @@ function Caregivers() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 48, width: '100%', textAlign: 'left' }}>
           {[
             { who: "IF YOU'RE THE USER", t: 'No surveillance.', items: ['No daily mood prompts', 'No streaks to maintain', 'You choose what your sponsor sees', 'Pause sponsor sharing anytime'] },
-            { who: "IF YOU'RE THE SPONSOR", t: 'No live dashboard.', items: ['Only a heads-up if score < 40', 'One-tap "I checked in" reply', 'Never see the raw biometrics', 'No streaks, no scoring of you'] },
+            { who: "IF YOU'RE THE SPONSOR", t: 'An overview, not a feed.', items: ['A wellness score and status — updated when they sync', 'Patterns across sleep, stress, social and home', 'Send a gentle nudge in one tap', 'Only what they\'ve chosen to share'] },
           ].map((c, i) => (
             <div key={i} style={{
               border: `1px solid ${C.border}`, borderRadius: 24, padding: 32,
