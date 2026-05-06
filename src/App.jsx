@@ -486,7 +486,7 @@ function CoachSection() {
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', position: 'relative' }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 32, alignItems: 'flex-end' }}>
           <PhoneWithLabel src="/assets/coach.png" label="Member" width={260} tilt={-3} />
-          <PhoneWithLabel src="/assets/Sponsor (2).jpg" label="Sponsor" width={260} tilt={3} />
+          <PhoneWithLabel src="/assets/sponsor.jpg" label="Sponsor" width={260} tilt={3} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>THE COACH</div>
