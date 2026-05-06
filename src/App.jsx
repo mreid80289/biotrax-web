@@ -621,7 +621,7 @@ function ScoreRing({ value, tier, tierColor }) {
         position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
       }}>
-        <div style={{ fontFamily: fontDisplay, fontSize: 64, fontWeight: 400, lineHeight: 1, color: C.ink, letterSpacing: -2 }}>{value}</div>
+        <div style={{ fontFamily: fontBody, fontSize: 64, fontWeight: 700, lineHeight: 1, color: C.ink, letterSpacing: -2.5 }}>{value}</div>
         <div style={{ fontFamily: fontMono, fontSize: 11, color: tierColor, letterSpacing: 1.5, fontWeight: 700, marginTop: 2 }}>{tier}</div>
       </div>
     </div>
