@@ -562,7 +562,7 @@ function Caregivers() {
           They get a heads-up. <span style={{ fontStyle: 'italic', color: C.green }}>You stay in control.</span>
         </h2>
         <p style={{ margin: 0, fontFamily: fontBody, fontSize: 17, lineHeight: 1.55, color: C.inkDim, maxWidth: 600 }}>
-          Sponsors never see your raw data. They get one quiet message when your wellness score drops below 40 — with a tap to reach out.
+          Sponsors see a gentle overview — patterns, not raw data. They get a quiet alert if your wellness score drops below 40 — with a tap to reach out.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 48, width: '100%', textAlign: 'left' }}>
