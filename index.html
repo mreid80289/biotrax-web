@@ -64,9 +64,61 @@
       animation: biotrax-breath 6s infinite ease-in-out;
     }
 
+    /* Hero phone chip choreography — staggered fade-in on page load.
+       Each chip starts hidden and slides into place from the appropriate
+       edge. They settle quickly (single-shot, not a loop) so the phone
+       feels deliberate, not gimmicky. The animation-delay sets each
+       chip's entry time:
+         SCORE  -> 800ms  (primary value, lands first)
+         STRESS -> 1400ms (supporting biometric)
+         CONTACT-> 2000ms (safety-net story closes the sequence)
+       The 'forwards' fill-mode keeps each chip in its final state once
+       the keyframes finish, so they remain visible afterward. */
+    @keyframes biotrax-chip-from-left {
+      0%   { opacity: 0; transform: translateZ(60px) translateX(-16px); }
+      100% { opacity: 1; transform: translateZ(60px) translateX(0);     }
+    }
+    @keyframes biotrax-chip-from-right-top {
+      0%   { opacity: 0; transform: translateZ(80px) translateX(16px); }
+      100% { opacity: 1; transform: translateZ(80px) translateX(0);    }
+    }
+    @keyframes biotrax-chip-from-right-bottom {
+      0%   { opacity: 0; transform: translateZ(50px) translateX(16px); }
+      100% { opacity: 1; transform: translateZ(50px) translateX(0);    }
+    }
+    .biotrax-chip {
+      opacity: 0;
+      animation-fill-mode: forwards;
+      animation-duration: 700ms;
+      animation-timing-function: cubic-bezier(.2,.7,.3,1);
+    }
+    .biotrax-chip-score   { animation-name: biotrax-chip-from-left;         animation-delay:  800ms; }
+    .biotrax-chip-stress  { animation-name: biotrax-chip-from-right-top;    animation-delay: 1400ms; }
+    .biotrax-chip-contact { animation-name: biotrax-chip-from-right-bottom; animation-delay: 2000ms; }
+
+    /* Single-shot pulse on the CONTACT chip's dot, fired after the chip
+       has settled. Plants 'this is alive, monitoring you' without a
+       continuous loop. Animation-delay matches the chip's settle time
+       (chip lands at 2000+700=2700ms). */
+    @keyframes biotrax-chip-dot-pulse {
+      0%   { box-shadow: 0 0 8px rgba(52,211,153,0.7), 0 0 0 0  rgba(52,211,153,0.55); }
+      70%  { box-shadow: 0 0 8px rgba(52,211,153,0.7), 0 0 0 10px transparent;         }
+      100% { box-shadow: 0 0 8px rgba(52,211,153,0.7), 0 0 0 0  transparent;           }
+    }
+    .biotrax-chip-contact .biotrax-chip-dot {
+      animation: biotrax-chip-dot-pulse 1200ms ease-out 2700ms 1 both;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .bullet-pulse   { animation: none; }
       .biotrax-breath { animation: none; }
+      /* Chips: skip the entrance animation but still show them
+         (otherwise reduced-motion users see no chips at all). */
+      .biotrax-chip                            { opacity: 1; animation: none; }
+      .biotrax-chip-score                      { transform: translateZ(60px); }
+      .biotrax-chip-stress                     { transform: translateZ(80px); }
+      .biotrax-chip-contact                    { transform: translateZ(50px); }
+      .biotrax-chip-contact .biotrax-chip-dot  { animation: none; }
     }
   </style>
 </head>

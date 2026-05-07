@@ -189,7 +189,7 @@ function TiltPhone({ src, width = 360, alt }) {
           pointerEvents: 'none',
           transition: tilt.active ? 'none' : 'background 0.6s ease-out',
         }} />
-        <div style={{
+        <div className="biotrax-chip biotrax-chip-score" style={{
           position: 'absolute',
           left: '-18%', top: '36%',
           transform: 'translateZ(60px)',
@@ -207,9 +207,9 @@ function TiltPhone({ src, width = 360, alt }) {
           pointerEvents: 'none',
         }}>
           <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}`, marginRight: 8, verticalAlign: 'middle' }} />
-          SCORE 77 · GOOD
+          SCORE 77
         </div>
-        <div style={{
+        <div className="biotrax-chip biotrax-chip-stress" style={{
           position: 'absolute',
           right: '-22%', top: '14%',
           transform: 'translateZ(80px)',
@@ -226,11 +226,10 @@ function TiltPhone({ src, width = 360, alt }) {
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
         }}>
-          <span style={{ color: C.ink, fontWeight: 600 }}>HRV 41ms</span>
-          <span style={{ margin: '0 8px', color: C.inkMuted }}>·</span>
-          STRESS — MOD
+          <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}`, marginRight: 8, verticalAlign: 'middle' }} />
+          STRESS MODERATE
         </div>
-        <div style={{
+        <div className="biotrax-chip biotrax-chip-contact" style={{
           position: 'absolute',
           right: '-14%', bottom: '20%',
           transform: 'translateZ(50px)',
@@ -247,7 +246,7 @@ function TiltPhone({ src, width = 360, alt }) {
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
         }}>
-          <span style={{ color: C.green, fontWeight: 600 }}>● </span>
+          <span className="biotrax-chip-dot" style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}`, marginRight: 8, verticalAlign: 'middle' }} />
           CONTACT LINKED
         </div>
       </div>
