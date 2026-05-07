@@ -2,24 +2,34 @@
  * Cloudflare Pages Function — Waitlist signup proxy
  *
  * Path: POST /api/subscribe
- * Forwards { email } to the Beehiiv iframe-form submit endpoint.
+ * Forwards { email } to Beehiiv's iframe-form JSON API.
  *
- * Why a proxy? Posting from the browser directly to embeds.beehiiv.com
- * would hit CORS issues and would also expose the form ID in the
- * page bundle. Proxying through our own /api/subscribe route keeps the
- * fetch on the same origin (no CORS), hides the third-party endpoint
- * from page source, and gives us a place to add server-side checks
- * (rate limiting, email validation, abuse signals) later.
+ * Endpoint discovered by inspecting the network request from the
+ * official iframe at embeds.beehiiv.com/{form_id}. As of the April 30,
+ * 2026 builder update, Beehiiv changed to:
  *
- * The form ID below is for the BioTrax website waitlist form,
- * confirmed working at /6434a1e6-5313-403a-b0d4-2567aab41991.
- * If we ever rotate forms, change BEEHIIV_FORM_ID once here.
+ *   POST https://embeds.beehiiv.com/api/submit
+ *   Content-Type: application/json
+ *   {
+ *     external_embed_id: "<form_id>",
+ *     publication_id:    "<pub_xxx>",
+ *     email:             "<user email>",
+ *     captcha_token:     "",
+ *     slim:              false,
+ *     user_agent:        "<browser UA>"
+ *   }
+ *
+ * The endpoint returns CORS-permissive headers (Access-Control-Allow-Origin: *)
+ * so we COULD call it from the browser directly — but proxying through our
+ * own /api/subscribe route gives us a clean swap path to the official
+ * /v2 API once we verify identity and get a real API key, plus a place
+ * to add rate-limiting/abuse detection without touching the React code.
  */
 
-const BEEHIIV_FORM_ID = '6434a1e6-5313-403a-b0d4-2567aab41991';
-const BEEHIIV_SUBMIT_URL = `https://embeds.beehiiv.com/${BEEHIIV_FORM_ID}/submissions`;
+const BEEHIIV_FORM_ID        = '6434a1e6-5313-403a-b0d4-2567aab41991';
+const BEEHIIV_PUBLICATION_ID = 'pub_7cc1acc3-35a6-4901-b171-7ad2d72c3e31';
+const BEEHIIV_SUBMIT_URL     = 'https://embeds.beehiiv.com/api/submit';
 
-// RFC 5322-ish — good enough; full RFC validation isn't worth the regex.
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function jsonResponse(status, body) {
@@ -43,45 +53,54 @@ export async function onRequestPost({ request }) {
     return jsonResponse(400, { ok: false, error: 'Please enter a valid email address.' });
   }
 
-  // 2. Forward to Beehiiv. The iframe form posts as multipart/form-data,
-  //    but the endpoint accepts standard application/x-www-form-urlencoded
-  //    just as well — and URLSearchParams is simpler.
-  const beehiivBody = new URLSearchParams({ 'email[address]': email });
+  // Pass through the visitor's user agent so Beehiiv's analytics get
+  // accurate device data, not Cloudflare worker UA.
+  const visitorUA = request.headers.get('user-agent')
+    || 'Mozilla/5.0 (compatible; BioTraxWaitlist/1.0)';
 
+  // 2. Build the exact JSON body Beehiiv's iframe sends.
+  const beehiivBody = {
+    external_embed_id: BEEHIIV_FORM_ID,
+    publication_id:    BEEHIIV_PUBLICATION_ID,
+    email,
+    captcha_token:     '',
+    slim:              false,
+    user_agent:        visitorUA,
+  };
+
+  // 3. Forward to Beehiiv. Set Origin/Referer to match the iframe host
+  //    so the request blends in with their normal traffic.
   let beehiivResponse;
   try {
     beehiivResponse = await fetch(BEEHIIV_SUBMIT_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json, text/plain, */*',
-        // Beehiiv's endpoint expects a referer that matches the form's
-        // host. Spoofing the iframe's own URL keeps us looking legit.
-        'Referer': `https://embeds.beehiiv.com/${BEEHIIV_FORM_ID}`,
-        'Origin': 'https://embeds.beehiiv.com',
+        'Content-Type': 'application/json',
+        'Accept':       'application/json, text/plain, */*',
+        'Origin':       'https://embeds.beehiiv.com',
+        'Referer':      `https://embeds.beehiiv.com/${BEEHIIV_FORM_ID}`,
       },
-      body: beehiivBody.toString(),
+      body: JSON.stringify(beehiivBody),
     });
-  } catch (err) {
-    // Network / DNS / TLS problem reaching Beehiiv. Don't lie to user.
+  } catch {
     return jsonResponse(502, { ok: false, error: 'Could not reach the signup service. Please try again in a moment.' });
   }
 
-  // 3. Beehiiv returned. Treat any 2xx as a successful subscription;
-  //    treat any 4xx as a soft success too IF the body looks like a
-  //    "duplicate / already subscribed" signal. Anything else is a real failure.
+  // 4. Handle response. Read body once for diagnostic + duplicate detection.
+  const text = await beehiivResponse.text().catch(() => '');
+
   if (beehiivResponse.ok) {
     return jsonResponse(200, { ok: true });
   }
 
-  // Read body once for diagnostic + duplicate detection.
-  const text = await beehiivResponse.text().catch(() => '');
+  // Some 4xx responses are effectively a success — duplicate emails,
+  // already-in-audience signals. Surface those as success.
   const isDuplicate = /already|duplicate|exists|subscribed/i.test(text);
   if (isDuplicate) {
     return jsonResponse(200, { ok: true, duplicate: true });
   }
 
-  // Surface a generic friendly error to the user; log details server-side.
+  // Real failure — log full details server-side for debugging.
   console.error('[subscribe] beehiiv non-ok', beehiivResponse.status, text.slice(0, 500));
   return jsonResponse(502, {
     ok: false,
@@ -89,12 +108,9 @@ export async function onRequestPost({ request }) {
   });
 }
 
-// Reject everything that isn't POST. Helpful to surface a clear
-// 405 instead of a confusing 404 if someone hits the URL in a browser.
+// Reject non-POST methods with a clear 405.
 export async function onRequest({ request }) {
   if (request.method === 'POST') {
-    // Won't actually run — onRequestPost handles POST. This branch
-    // exists only because Cloudflare invokes onRequest for unhandled methods.
     return jsonResponse(500, { ok: false, error: 'Routing error' });
   }
   return new Response('Method Not Allowed', {
