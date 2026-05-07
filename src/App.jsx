@@ -10,6 +10,7 @@ const C = {
   greenDeep: '#10b981',
   blue: '#3b82f6',
   amber: '#fbbf24',
+  coral: '#fb923c',
   border: 'rgba(255,255,255,0.08)',
   borderStrong: 'rgba(255,255,255,0.14)',
   paper: '#f5f3ef',
@@ -496,14 +497,21 @@ function Tracks() {
       accent: C.amber,
     },
     {
-      kicker: '02 / ISOLATION',
+      kicker: '02 / STRESS',
+      title: 'HRV, watched all day.',
+      body: 'Continuous SDNN and RMSSD from the Watch — the validated clinical biomarker for depression risk.',
+      src: '/assets/stress.png',
+      accent: C.coral,
+    },
+    {
+      kicker: '03 / ISOLATION',
       title: 'Time at home, watched gently.',
       body: 'A 72-hour rolling window of consecutive home stay. Subtle, never punitive.',
       src: '/assets/location.png',
       accent: C.green,
     },
     {
-      kicker: '03 / CONNECTION',
+      kicker: '04 / CONNECTION',
       title: 'Communication vs. doomscroll.',
       body: 'Active comms minutes versus passive social media — the cleanest signal of withdrawal.',
       src: '/assets/social.png',
@@ -515,25 +523,25 @@ function Tracks() {
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <SectionHeader
           kicker="WHAT IT WATCHES"
-          title={[{ t: 'Three quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
+          title={[{ t: 'Four quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
           sub="Apple Watch and Screen Time API do the work in the background. You just live your day."
         />
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 16 : 24, marginTop: isMobile ? 40 : 72 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: isMobile ? 16 : 18, marginTop: isMobile ? 40 : 72 }}>
           {items.map((it) => (
             <div key={it.kicker} style={{
               border: `1px solid ${C.border}`, borderRadius: 24,
-              background: C.bgAlt, padding: 28, display: 'flex', flexDirection: 'column', gap: 18,
+              background: C.bgAlt, padding: 24, display: 'flex', flexDirection: 'column', gap: 16,
               position: 'relative', overflow: 'hidden',
             }}>
               <div style={{
-                position: 'absolute', top: -1, left: 28, width: 40, height: 2,
+                position: 'absolute', top: -1, left: 24, width: 40, height: 2,
                 background: it.accent,
               }} />
               <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1, fontWeight: 600 }}>{it.kicker}</div>
-              <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 28, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
-              <p style={{ margin: 0, fontFamily: fontBody, fontSize: 14, lineHeight: 1.55, color: C.inkDim }}>{it.body}</p>
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12, paddingTop: 12 }}>
-                <IPhone src={it.src} width={210} />
+              <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 24, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
+              <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, lineHeight: 1.55, color: C.inkDim }}>{it.body}</p>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8, paddingTop: 8 }}>
+                <IPhone src={it.src} width={170} />
               </div>
             </div>
           ))}
@@ -596,7 +604,7 @@ function StressSection() {
     <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', top: '15%', right: '5%', width: 480, height: 480,
-        background: 'radial-gradient(circle, rgba(251,191,36,0.10), transparent 60%)',
+        background: 'radial-gradient(circle, rgba(251,146,60,0.12), transparent 60%)',
         filter: 'blur(60px)', pointerEvents: 'none',
       }} />
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '0.95fr 1.05fr', gap: isMobile ? 40 : 80, alignItems: 'center', position: 'relative' }}>
@@ -604,9 +612,9 @@ function StressSection() {
           <IPhone src="/assets/stress.png" width={isMobile ? 240 : 320} tilt={-2} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 18 : 24, order: 2 }}>
-          <div style={{ fontFamily: fontMono, fontSize: 12, color: C.amber, letterSpacing: 1, fontWeight: 600 }}>STRESS · THE PRIMARY DRIVER</div>
+          <div style={{ fontFamily: fontMono, fontSize: 12, color: C.coral, letterSpacing: 1, fontWeight: 600 }}>STRESS · THE PRIMARY DRIVER</div>
           <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
-            The first thing to slip <span style={{ fontStyle: 'italic', color: C.amber }}>isn't mood.</span>
+            The first thing to slip <span style={{ fontStyle: 'italic', color: C.coral }}>isn't mood.</span>
           </h2>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 540 }}>
             Chronic stress is the most established cause of depression onset and relapse — through HPA axis dysregulation, cortisol-driven changes to mood-regulating brain regions, and a measurable drop in heart rate variability. BioTrax tracks that same biomarker continuously through your Apple Watch.
@@ -618,7 +626,7 @@ function StressSection() {
               ['The earliest signal', 'Reduced HRV is one of the first measurable changes in many relapse trajectories.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.amber, marginTop: 7 }} />
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.coral, marginTop: 7 }} />
                 <div>
                   <div style={{ fontFamily: fontBody, fontSize: 15, fontWeight: 600, color: C.ink }}>{t}</div>
                   <div style={{ fontFamily: fontBody, fontSize: 14, color: C.inkDim, marginTop: 2 }}>{d}</div>
