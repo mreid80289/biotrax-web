@@ -699,6 +699,7 @@ function CoachSection() {
             {[
               ['One-tap invitation', 'Send a private code. Your coach installs BioTrax and joins in seconds — no separate account, no separate app.'],
               ['You choose what they see', 'Toggle each signal on, off, or paused — anytime. Pause coach sharing entirely with one switch.'],
+              ['Check-ins on your rhythm', 'Pick days that work for both of you. One tap to say "I\'m here." No streaks to maintain, no guilt for missed days.'],
               ['A gentle voice for both', 'BioTrax surfaces a small action for you. Your coach sees a calm overview — never raw data.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
