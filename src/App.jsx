@@ -1054,22 +1054,63 @@ function Waitlist() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || submitting) return;
+
+    // Basic client-side validation — type=email already gates on submit,
+    // but a final guard prevents trailing spaces and other gotchas.
+    const trimmed = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmed) || trimmed.length > 254) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     setSubmitting(true);
     setError('');
+
     try {
-      const res = await fetch('/api/subscribe', {
+      // POST directly to Beehiiv's iframe-form JSON API. This is the same
+      // endpoint and payload shape their official iframe uses (verified via
+      // network inspection), and the endpoint returns CORS-permissive
+      // headers (Access-Control-Allow-Origin: *) so the browser can call
+      // it from biotrax-web.pages.dev without a proxy.
+      //
+      // Why not via a Cloudflare Pages Function? Beehiiv's submit endpoint
+      // sits behind their own Cloudflare bot challenge, which blocks
+      // server-to-server traffic from other Cloudflare datacenters but
+      // accepts real-browser requests like this one. The browser passes
+      // the bot check naturally; a Pages Function does not.
+      const res = await fetch('https://embeds.beehiiv.com/api/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/plain, */*',
+        },
+        body: JSON.stringify({
+          external_embed_id: '6434a1e6-5313-403a-b0d4-2567aab41991',
+          publication_id:    'pub_7cc1acc3-35a6-4901-b171-7ad2d72c3e31',
+          email:             trimmed,
+          captcha_token:     '',
+          slim:              false,
+          user_agent:        typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok && data.ok) {
+
+      // Beehiiv treats duplicates as 200 too, so any 2xx is success.
+      if (res.ok) {
         setSubmitted(true);
-      } else {
-        setError(data.error || 'Something went wrong. Please try again.');
+        return;
       }
+
+      // For 4xx/5xx, try to read a duplicate signal from the body and
+      // treat as success if it's just "already subscribed."
+      const text = await res.text().catch(() => '');
+      if (/already|duplicate|exists|subscribed/i.test(text)) {
+        setSubmitted(true);
+        return;
+      }
+
+      setError('Something went wrong. Please try again in a moment.');
     } catch {
-      setError('Could not reach the server. Please check your connection and try again.');
+      setError('Could not reach the signup service. Please check your connection and try again.');
     } finally {
       setSubmitting(false);
     }
