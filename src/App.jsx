@@ -1048,10 +1048,31 @@ function Waitlist() {
   const isMobile = useIsMobile();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) setSubmitted(true);
+    if (!email || submitting) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setSubmitted(true);
+      } else {
+        setError(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setError('Could not reach the server. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -1078,26 +1099,45 @@ function Waitlist() {
             You're on the list. We'll be in touch. ✓
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 12 : 8, marginTop: 16, width: '100%', maxWidth: 460 }}>
-            <input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{
-                flex: 1, padding: '15px 20px', borderRadius: 999,
-                border: `1px solid ${C.borderStrong}`, background: 'rgba(255,255,255,0.03)',
-                fontSize: 15, color: C.ink, fontFamily: fontBody, outline: 'none',
-              }}
-            />
-            <button type="submit" style={{
-              background: C.green, color: '#04201a', border: 'none',
-              padding: '15px 26px', borderRadius: 999, fontSize: 15, fontWeight: 600,
-              cursor: 'pointer', fontFamily: fontBody,
-              boxShadow: `0 0 32px rgba(52,211,153,0.4)`,
-            }}>Reserve seat →</button>
-          </form>
+          <>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 12 : 8, marginTop: 16, width: '100%', maxWidth: 460 }}>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); if (error) setError(''); }}
+                required
+                disabled={submitting}
+                style={{
+                  flex: 1, padding: '15px 20px', borderRadius: 999,
+                  border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : C.borderStrong}`,
+                  background: 'rgba(255,255,255,0.03)',
+                  fontSize: 15, color: C.ink, fontFamily: fontBody, outline: 'none',
+                  opacity: submitting ? 0.6 : 1,
+                  transition: 'border-color 0.2s, opacity 0.2s',
+                }}
+              />
+              <button type="submit" disabled={submitting} style={{
+                background: C.green, color: '#04201a', border: 'none',
+                padding: '15px 26px', borderRadius: 999, fontSize: 15, fontWeight: 600,
+                cursor: submitting ? 'wait' : 'pointer', fontFamily: fontBody,
+                boxShadow: `0 0 32px rgba(52,211,153,0.4)`,
+                opacity: submitting ? 0.7 : 1,
+                transition: 'opacity 0.2s',
+                minWidth: 140,
+              }}>
+                {submitting ? 'Reserving…' : 'Reserve seat →'}
+              </button>
+            </form>
+            {error && (
+              <div style={{
+                fontFamily: fontBody, fontSize: 13.5, color: '#fca5a5',
+                marginTop: -8, maxWidth: 460,
+              }}>
+                {error}
+              </div>
+            )}
+          </>
         )}
         <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.4, marginTop: 4 }}>
           NO SPAM · NO TRACKING · UNSUBSCRIBE ANYTIME
