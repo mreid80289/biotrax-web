@@ -100,11 +100,18 @@ export async function onRequestPost({ request }) {
     return jsonResponse(200, { ok: true, duplicate: true });
   }
 
-  // Real failure — log full details server-side for debugging.
+  // Real failure — log full details server-side for debugging,
+  // and surface the diagnostic info in the error response so we can
+  // see it from the browser without hunting through Cloudflare logs.
   console.error('[subscribe] beehiiv non-ok', beehiivResponse.status, text.slice(0, 500));
   return jsonResponse(502, {
     ok: false,
-    error: "Something went wrong on our end. Please try again — we'll fix it fast.",
+    error: `Beehiiv returned ${beehiivResponse.status}. Body: ${text.slice(0, 300)}`,
+    debug: {
+      status: beehiivResponse.status,
+      body: text.slice(0, 500),
+      sentTo: BEEHIIV_SUBMIT_URL,
+    },
   });
 }
 
