@@ -589,6 +589,57 @@ function PhoneWithLabel({ src, label, width, tilt }) {
   );
 }
 
+// ─────────────────────────── Stress Section ───────────────────────────
+function StressSection() {
+  const isMobile = useIsMobile();
+  return (
+    <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
+      <div style={{
+        position: 'absolute', top: '15%', right: '5%', width: 480, height: 480,
+        background: 'radial-gradient(circle, rgba(251,191,36,0.10), transparent 60%)',
+        filter: 'blur(60px)', pointerEvents: 'none',
+      }} />
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '0.95fr 1.05fr', gap: isMobile ? 40 : 80, alignItems: 'center', position: 'relative' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', order: isMobile ? 1 : 1 }}>
+          <IPhone src="/assets/stress.png" width={isMobile ? 240 : 320} tilt={-2} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 18 : 24, order: 2 }}>
+          <div style={{ fontFamily: fontMono, fontSize: 12, color: C.amber, letterSpacing: 1, fontWeight: 600 }}>STRESS · THE PRIMARY DRIVER</div>
+          <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
+            The first thing to slip <span style={{ fontStyle: 'italic', color: C.amber }}>isn't mood.</span>
+          </h2>
+          <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 540 }}>
+            Chronic stress is the most established cause of depression onset and relapse — through HPA axis dysregulation, cortisol-driven changes to mood-regulating brain regions, and a measurable drop in heart rate variability. BioTrax tracks that same biomarker continuously through your Apple Watch.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
+            {[
+              ['Clinical-grade HRV', 'Continuous SDNN and RMSSD readings — the metrics validated in longitudinal depression research.'],
+              ['Patterns, not check-ins', 'Weeks of context, not anxious daily questions. Stress trends often shift before mood does.'],
+              ['The earliest signal', 'Reduced HRV is one of the first measurable changes in many relapse trajectories.'],
+            ].map(([t, d]) => (
+              <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.amber, marginTop: 7 }} />
+                <div>
+                  <div style={{ fontFamily: fontBody, fontSize: 15, fontWeight: 600, color: C.ink }}>{t}</div>
+                  <div style={{ fontFamily: fontBody, fontSize: 14, color: C.inkDim, marginTop: 2 }}>{d}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{
+            marginTop: 12,
+            paddingTop: 16,
+            borderTop: `1px solid ${C.border}`,
+            fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.4,
+          }}>
+            BACKED BY PEER-REVIEWED RESEARCH · HPA AXIS · HRV BIOMARKERS
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CoachSection() {
   const isMobile = useIsMobile();
   return (
@@ -1089,6 +1140,7 @@ export default function App() {
       <Hero headline={headline} />
       <Tracks />
       <HowItWorks />
+      <StressSection />
       <CoachSection />
       <WeeklyReport />
       <Caregivers />
