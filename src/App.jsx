@@ -1055,8 +1055,8 @@ function Waitlist() {
     e.preventDefault();
     if (!email || submitting) return;
 
-    // Basic client-side validation — type=email already gates on submit,
-    // but a final guard prevents trailing spaces and other gotchas.
+    // Basic client-side validation — type=email already gates submit,
+    // but a final guard prevents trailing spaces and empty-domain typos.
     const trimmed = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmed) || trimmed.length > 254) {
       setError('Please enter a valid email address.');
@@ -1067,49 +1067,34 @@ function Waitlist() {
     setError('');
 
     try {
-      // POST directly to Beehiiv's iframe-form JSON API. This is the same
-      // endpoint and payload shape their official iframe uses (verified via
-      // network inspection), and the endpoint returns CORS-permissive
-      // headers (Access-Control-Allow-Origin: *) so the browser can call
-      // it from biotrax-web.pages.dev without a proxy.
-      //
-      // Why not via a Cloudflare Pages Function? Beehiiv's submit endpoint
-      // sits behind their own Cloudflare bot challenge, which blocks
-      // server-to-server traffic from other Cloudflare datacenters but
-      // accepts real-browser requests like this one. The browser passes
-      // the bot check naturally; a Pages Function does not.
-      const res = await fetch('https://embeds.beehiiv.com/api/submit', {
+      // Web3Forms: cross-origin friendly forwarding service. The user's
+      // email gets routed to the inbox associated with the access key
+      // (configured in the Web3Forms dashboard). No backend required;
+      // their /submit endpoint accepts JSON with permissive CORS.
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json, text/plain, */*',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
-          external_embed_id: '6434a1e6-5313-403a-b0d4-2567aab41991',
-          publication_id:    'pub_7cc1acc3-35a6-4901-b171-7ad2d72c3e31',
-          email:             trimmed,
-          captcha_token:     '',
-          slim:              false,
-          user_agent:        typeof navigator !== 'undefined' ? navigator.userAgent : '',
+          access_key: '6a1edf3e-d02b-42eb-ad05-a5eed821db50',
+          email: trimmed,
+          subject: 'BioTrax — New waitlist signup',
+          from_name: 'BioTrax Waitlist',
+          // Web3Forms surfaces these in the email body for context.
+          source: 'biotrax-web.pages.dev',
+          submitted_at: new Date().toISOString(),
         }),
       });
 
-      // Beehiiv treats duplicates as 200 too, so any 2xx is success.
-      if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) {
         setSubmitted(true);
         return;
       }
 
-      // For 4xx/5xx, try to read a duplicate signal from the body and
-      // treat as success if it's just "already subscribed."
-      const text = await res.text().catch(() => '');
-      if (/already|duplicate|exists|subscribed/i.test(text)) {
-        setSubmitted(true);
-        return;
-      }
-
-      // Diagnostic mode — surface real error so we can debug from the page.
-      setError(`Beehiiv ${res.status}: ${text.slice(0, 250) || '(empty body)'}`);
+      setError(data.message || 'Something went wrong. Please try again in a moment.');
     } catch {
       setError('Could not reach the signup service. Please check your connection and try again.');
     } finally {
