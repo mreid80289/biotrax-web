@@ -583,16 +583,24 @@ function HowItWorks() {
 }
 
 // ─────────────────────────── The Coach ───────────────────────────
-function PhoneWithLabel({ src, label, width, tilt }) {
+function PhoneWithLabel({ src, label, sublabel, width, tilt }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
       <IPhone src={src} width={width} tilt={tilt} />
-      <div style={{
-        fontFamily: fontMono, fontSize: 11, fontWeight: 600, letterSpacing: 1.5,
-        color: C.inkMuted, textTransform: 'uppercase',
-        border: `1px solid ${C.borderStrong}`, borderRadius: 999,
-        padding: '5px 14px',
-      }}>{label}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        <div style={{
+          fontFamily: fontMono, fontSize: 11, fontWeight: 600, letterSpacing: 1.5,
+          color: C.inkMuted, textTransform: 'uppercase',
+          border: `1px solid ${C.borderStrong}`, borderRadius: 999,
+          padding: '5px 14px',
+        }}>{label}</div>
+        {sublabel && (
+          <div style={{
+            fontFamily: fontBody, fontSize: 12, color: C.inkMuted,
+            fontStyle: 'italic', textAlign: 'center',
+          }}>{sublabel}</div>
+        )}
+      </div>
     </div>
   );
 }
@@ -654,27 +662,42 @@ function CoachSection() {
     <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', top: '20%', left: '10%', width: 500, height: 500,
-        background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent 60%)',
+        background: 'radial-gradient(circle, rgba(52,211,153,0.10), transparent 60%)',
         filter: 'blur(60px)', pointerEvents: 'none',
       }} />
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 40 : 80, alignItems: 'center', position: 'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 14 : 32, alignItems: 'flex-end', order: isMobile ? 2 : 1 }}>
-          <PhoneWithLabel src="/assets/coach.png" label="Member" width={isMobile ? 150 : 260} tilt={-3} />
-          <PhoneWithLabel src="/assets/sponsor.jpg" label="Sponsor" width={isMobile ? 150 : 260} tilt={3} />
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: isMobile ? 18 : 28, order: isMobile ? 2 : 1 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+            border: `1px solid ${C.borderStrong}`,
+            background: 'rgba(52,211,153,0.06)',
+            padding: '7px 16px', borderRadius: 999,
+            fontFamily: fontMono, fontSize: 11, color: C.green, letterSpacing: 1.2, fontWeight: 600,
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}` }} />
+            ONE APP · TWO PROFILES
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 14 : 32, alignItems: 'flex-end' }}>
+            <PhoneWithLabel src="/assets/coach.png"   label="Member"  sublabel="your daily companion" width={isMobile ? 150 : 260} tilt={-3} />
+            <PhoneWithLabel src="/assets/sponsor.jpg" label="Sponsor" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
+          </div>
         </div>
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 18 : 24, order: isMobile ? 1 : 2 }}>
-          <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>THE COACH</div>
+          <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1, fontWeight: 600 }}>SHARED SUPPORT</div>
           <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.0, letterSpacing: -1, color: C.ink }}>
-            A gentle voice <span style={{ fontStyle: 'italic', color: C.green }}>when the patterns slip.</span>
+            Better with someone <span style={{ fontStyle: 'italic', color: C.green }}>in your corner.</span>
           </h2>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
-            Loose check-in routines. One-tap reassurance. The Coach surfaces a single small action — a walk, a breath, a friend's name — never a guilt-inducing streak.
+            BioTrax can stay just yours. When you're ready, one tap invites someone you trust — a sponsor, a friend, a clinician — to walk alongside you. Same app. Sponsor profile. Only what you've chosen to share.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              ['Reoccurring check-ins', 'Days that work for you and your sponsor.'],
-              ['One nudge at a time', 'Coach proposes a single action — never a list.'],
-              ['Weekly behavioural report', '7-day patterns of stress, sleep and home stay.'],
+              ['One-tap invitation', 'Send a private code. Sponsor installs BioTrax and joins as your sponsor in seconds — no separate account, no separate app.'],
+              ['You choose what they see', 'Toggle each signal on, off, or paused — anytime. Pause sponsor sharing entirely with one switch.'],
+              ['A gentle voice for both', 'The Coach surfaces a small action for you. Sponsor sees a calm overview — never raw data.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.green, marginTop: 7 }} />
