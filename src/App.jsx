@@ -1108,7 +1108,8 @@ function Waitlist() {
         return;
       }
 
-      setError('Something went wrong. Please try again in a moment.');
+      // Diagnostic mode — surface real error so we can debug from the page.
+      setError(`Beehiiv ${res.status}: ${text.slice(0, 250) || '(empty body)'}`);
     } catch {
       setError('Could not reach the signup service. Please check your connection and try again.');
     } finally {
