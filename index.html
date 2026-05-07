@@ -42,6 +42,18 @@
       cursor: pointer;
     }
     input[type="range"]::-moz-range-track { background: transparent; border: none; }
+
+    @keyframes biotrax-bullet-pulse {
+      0%   { box-shadow: 0 0 0 0 var(--pulse-color, rgba(52,211,153,0.55)); }
+      70%  { box-shadow: 0 0 0 8px transparent; }
+      100% { box-shadow: 0 0 0 0 transparent; }
+    }
+    .bullet-pulse {
+      animation: biotrax-bullet-pulse 2.4s infinite ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bullet-pulse { animation: none; }
+    }
   </style>
 </head>
 <body>

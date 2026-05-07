@@ -235,7 +235,7 @@ function TiltPhone({ src, width = 360, alt }) {
           pointerEvents: 'none',
         }}>
           <span style={{ color: C.green, fontWeight: 600 }}>● </span>
-          SPONSOR LINKED
+          COACH LINKED
         </div>
       </div>
       <div style={{
@@ -278,7 +278,7 @@ function Nav() {
   };
 
   const links = [
-    { l: 'The Coach', id: null },
+    { l: 'Shared Support', id: null },
     { l: 'How It Works', id: 'how-it-works' },
     { l: 'The App', id: null },
     { l: 'Investors', id: null },
@@ -467,7 +467,7 @@ function Hero({ headline }) {
             {[
               ['100%', 'On-device data'],
               ['0', 'Daily check-ins'],
-              ['1', 'Trusted sponsor'],
+              ['1', 'Trusted coach'],
             ].map(([v, l]) => (
               <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <div style={{ fontFamily: fontDisplay, fontSize: isMobile ? 22 : 28, fontWeight: 400, color: C.ink, letterSpacing: -0.5 }}>{v}</div>
@@ -556,7 +556,7 @@ function HowItWorks() {
   const isMobile = useIsMobile();
   const steps = [
     { n: '01', t: 'Pair your watch', d: 'BioTrax pulls sleep, HRV and steps through HealthKit. No setup beyond one tap.' },
-    { n: '02', t: 'Choose a sponsor', d: 'One person you trust. They get a quiet alert only if your score falls below 40.' },
+    { n: '02', t: 'Choose a coach', d: 'One person you trust. They get a quiet alert only if your score falls below 40.' },
     { n: '03', t: 'Live your life', d: 'No daily check-ins. The app learns your patterns and surfaces a nudge only when needed.' },
   ];
   return (
@@ -582,7 +582,7 @@ function HowItWorks() {
   );
 }
 
-// ─────────────────────────── The Coach ───────────────────────────
+// ─────────────────────────── Shared Support ───────────────────────────
 function PhoneWithLabel({ src, label, sublabel, width, tilt }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
@@ -590,8 +590,10 @@ function PhoneWithLabel({ src, label, sublabel, width, tilt }) {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
         <div style={{
           fontFamily: fontMono, fontSize: 11, fontWeight: 600, letterSpacing: 1.5,
-          color: C.inkMuted, textTransform: 'uppercase',
-          border: `1px solid ${C.borderStrong}`, borderRadius: 999,
+          color: C.green, textTransform: 'uppercase',
+          border: `1px solid rgba(52,211,153,0.35)`,
+          background: 'rgba(52,211,153,0.06)',
+          borderRadius: 999,
           padding: '5px 14px',
         }}>{label}</div>
         {sublabel && (
@@ -634,7 +636,7 @@ function StressSection() {
               ['The earliest signal', 'Reduced HRV is one of the first measurable changes in many relapse trajectories.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.coral, marginTop: 7 }} />
+                <div className="bullet-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: C.coral, marginTop: 7, '--pulse-color': 'rgba(251,146,60,0.55)' }} />
                 <div>
                   <div style={{ fontFamily: fontBody, fontSize: 15, fontWeight: 600, color: C.ink }}>{t}</div>
                   <div style={{ fontFamily: fontBody, fontSize: 14, color: C.inkDim, marginTop: 2 }}>{d}</div>
@@ -680,8 +682,8 @@ function CoachSection() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 14 : 32, alignItems: 'flex-end' }}>
-            <PhoneWithLabel src="/assets/coach.png"   label="Member"  sublabel="your daily companion" width={isMobile ? 150 : 260} tilt={-3} />
-            <PhoneWithLabel src="/assets/sponsor.jpg" label="Sponsor" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
+            <PhoneWithLabel src="/assets/member.png" label="Member"   sublabel="your daily companion" width={isMobile ? 150 : 260} tilt={-3} />
+            <PhoneWithLabel src="/assets/coach.jpg"  label="Coach App" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
           </div>
         </div>
 
@@ -691,16 +693,16 @@ function CoachSection() {
             Better with someone <span style={{ fontStyle: 'italic', color: C.green }}>in your corner.</span>
           </h2>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
-            BioTrax can stay just yours. When you're ready, one tap invites someone you trust — a sponsor, a friend, a clinician — to walk alongside you. Same app. Sponsor profile. Only what you've chosen to share.
+            BioTrax can stay just yours. When you're ready, one tap invites someone you trust — a coach, a friend, a clinician — to walk alongside you. Same app. Coach profile. Only what you've chosen to share.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              ['One-tap invitation', 'Send a private code. Sponsor installs BioTrax and joins as your sponsor in seconds — no separate account, no separate app.'],
-              ['You choose what they see', 'Toggle each signal on, off, or paused — anytime. Pause sponsor sharing entirely with one switch.'],
-              ['A gentle voice for both', 'The Coach surfaces a small action for you. Sponsor sees a calm overview — never raw data.'],
+              ['One-tap invitation', 'Send a private code. Your coach installs BioTrax and joins in seconds — no separate account, no separate app.'],
+              ['You choose what they see', 'Toggle each signal on, off, or paused — anytime. Pause coach sharing entirely with one switch.'],
+              ['A gentle voice for both', 'BioTrax surfaces a small action for you. Your coach sees a calm overview — never raw data.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.green, marginTop: 7 }} />
+                <div className="bullet-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: C.green, marginTop: 7, '--pulse-color': 'rgba(52,211,153,0.55)' }} />
                 <div>
                   <div style={{ fontFamily: fontBody, fontSize: 15, fontWeight: 600, color: C.ink }}>{t}</div>
                   <div style={{ fontFamily: fontBody, fontSize: 14, color: C.inkDim, marginTop: 2 }}>{d}</div>
@@ -761,13 +763,13 @@ function Caregivers() {
           They get a heads-up. <span style={{ fontStyle: 'italic', color: C.green }}>You stay in control.</span>
         </h2>
         <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 17, lineHeight: 1.55, color: C.inkDim, maxWidth: 600 }}>
-          Sponsors see a gentle overview — patterns, not raw data. They get a quiet alert if your wellness score drops below 40 — with a tap to reach out.
+          Coaches see a gentle overview — patterns, not raw data. They get a quiet alert if your wellness score drops below 40 — with a tap to reach out.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24, marginTop: isMobile ? 28 : 48, width: '100%', textAlign: 'left' }}>
           {[
-            { who: "IF YOU'RE THE USER", t: 'No surveillance.', items: ['No daily mood prompts', 'No streaks to maintain', 'You choose what your sponsor sees', 'Pause sponsor sharing anytime'] },
-            { who: "IF YOU'RE THE SPONSOR", t: 'An overview, not a feed.', items: ['A wellness score and status — updated when they sync', 'Patterns across sleep, stress, social and home', 'Send a gentle nudge in one tap', 'Only what they\'ve chosen to share'] },
+            { who: "IF YOU'RE THE USER", t: 'No surveillance.', items: ['No daily mood prompts', 'No streaks to maintain', 'You choose what your coach sees', 'Pause coach sharing anytime'] },
+            { who: "IF YOU'RE THE COACH", t: 'An overview, not a feed.', items: ['A wellness score and status — updated when they sync', 'Patterns across sleep, stress, social and home', 'Send a gentle nudge in one tap', 'Only what they\'ve chosen to share'] },
           ].map((c, i) => (
             <div key={i} style={{
               border: `1px solid ${C.border}`, borderRadius: 24, padding: isMobile ? 24 : 32,
@@ -910,18 +912,18 @@ function ScorePlayground() {
   const insight = total >= 75
     ? 'You are in a good place. A couple of signals are worth keeping an eye on as the week continues.'
     : total >= 60
-    ? 'Holding steady. The Coach surfaces a quiet nudge if any signal slips further.'
+    ? 'Holding steady. BioTrax surfaces a quiet nudge if any signal slips further.'
     : total >= 40
-    ? 'Patterns are wobbling. Coach proposes one small action — a walk, a breath, a check-in.'
-    : 'Score is critical. A push notification reaches your sponsor with a check-in prompt.';
+    ? 'Patterns are wobbling. BioTrax proposes one small action — a walk, a breath, a check-in.'
+    : 'Score is critical. A push notification reaches your coach with a check-in prompt.';
 
   const coachState = total >= 75
-    ? { dot: C.green, text: 'Coach: Monitoring — all signals within normal range' }
+    ? { dot: C.green, text: 'Status: Monitoring — all signals within normal range' }
     : total >= 60
-    ? { dot: C.amber, text: 'Coach: One signal trending — Coach watching, no action yet' }
+    ? { dot: C.amber, text: 'Status: One signal trending — watching, no action yet' }
     : total >= 40
-    ? { dot: '#f97316', text: 'Coach: Proposing a single action this afternoon' }
-    : { dot: '#ef4444', text: 'Coach: Sponsor alert sent — check-in requested' };
+    ? { dot: '#f97316', text: 'Status: Proposing a single action this afternoon' }
+    : { dot: '#ef4444', text: 'Status: Coach notified — check-in requested' };
 
   return (
     <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, background: C.bg, position: 'relative', overflow: 'hidden' }}>
@@ -1012,7 +1014,7 @@ function Privacy() {
     <section style={{ padding: isMobile ? '48px 20px' : '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 24 : 40, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
         <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 26 : 36, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5, color: C.ink, maxWidth: 480 }}>
-          Your data <span style={{ fontStyle: 'italic', color: C.green }}>never leaves the device</span> — until you choose a sponsor.
+          Your data <span style={{ fontStyle: 'italic', color: C.green }}>never leaves the device</span> — until you choose a coach.
         </h3>
         <div style={{ display: 'flex', gap: isMobile ? 16 : 32, flexWrap: 'wrap' }}>
           {['HealthKit', 'Screen Time API', 'CoreLocation', 'On-device ML'].map(t => (
@@ -1106,7 +1108,7 @@ function Footer() {
           </p>
         </div>
         {[
-          { t: 'Product', l: ['The Coach', 'Wellness Score', 'Privacy', 'Pricing'] },
+          { t: 'Product', l: ['Shared Support', 'Wellness Score', 'Privacy', 'Pricing'] },
           { t: 'Company', l: ['About', 'Investors', 'Press', 'Contact'] },
           { t: 'Legal', l: ['Privacy policy', 'Terms', 'HIPAA notice', 'Disclosures'] },
         ].map(col => (
