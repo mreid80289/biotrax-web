@@ -35,6 +35,19 @@ function useIsMobile(breakpoint = 768) {
   return isMobile;
 }
 
+function useIsWide(breakpoint = 1150) {
+  const [isWide, setIsWide] = useState(
+    typeof window !== 'undefined' ? window.innerWidth >= breakpoint : false
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    const handler = (e) => setIsWide(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, [breakpoint]);
+  return isWide;
+}
+
 // ─────────────────────────── iPhone frame ───────────────────────────
 function IPhone({ src, width = 280, alt, style = {}, shadow = true, tilt = 0, innerStyle = {}, imgStyle = {}, eager = false }) {
   const aspect = 2796 / 1290;
@@ -488,6 +501,7 @@ function Hero({ headline }) {
 // ─────────────────────────── What It Tracks ───────────────────────────
 function Tracks() {
   const isMobile = useIsMobile();
+  const isWide = useIsWide();
   const items = [
     {
       kicker: '01 / SLEEP',
@@ -538,10 +552,10 @@ function Tracks() {
                 background: it.accent,
               }} />
               <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1, fontWeight: 600 }}>{it.kicker}</div>
-              <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 24, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
+              <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isWide ? 26 : 24, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
               <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, lineHeight: 1.55, color: C.inkDim }}>{it.body}</p>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8, paddingTop: 8 }}>
-                <IPhone src={it.src} width={170} />
+                <IPhone src={it.src} width={isWide ? 200 : 170} />
               </div>
             </div>
           ))}
