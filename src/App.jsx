@@ -248,7 +248,7 @@ function TiltPhone({ src, width = 360, alt }) {
           pointerEvents: 'none',
         }}>
           <span style={{ color: C.green, fontWeight: 600 }}>● </span>
-          COACH LINKED
+          CONTACT LINKED
         </div>
       </div>
       <div style={{
@@ -480,7 +480,7 @@ function Hero({ headline }) {
             {[
               ['100%', 'On-device data'],
               ['0', 'Daily check-ins'],
-              ['1', 'Trusted coach'],
+              ['1', 'Trusted contact'],
             ].map(([v, l]) => (
               <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <div style={{ fontFamily: fontDisplay, fontSize: isMobile ? 22 : 28, fontWeight: 400, color: C.ink, letterSpacing: -0.5 }}>{v}</div>
@@ -491,7 +491,7 @@ function Hero({ headline }) {
         </div>
 
         <div style={{ order: isMobile ? 1 : 2, display: 'flex', justifyContent: 'center' }}>
-          <TiltPhone src="/assets/home.png" width={isMobile ? 240 : 360} alt="BioTrax wellness score home screen" />
+          <TiltPhone src="/assets/home.png" width={isMobile ? 240 : 360} alt="BioTrax Baseline Score home screen" />
         </div>
       </div>
     </section>
@@ -570,7 +570,7 @@ function HowItWorks() {
   const isMobile = useIsMobile();
   const steps = [
     { n: '01', t: 'Pair your watch', d: 'BioTrax pulls sleep, HRV and steps through HealthKit. No setup beyond one tap.' },
-    { n: '02', t: 'Choose a coach', d: 'One person you trust. They get a quiet alert only if your score falls below 40.' },
+    { n: '02', t: 'Choose a trusted contact', d: 'One person in your corner. They get a quiet alert only if your score falls below 40.' },
     { n: '03', t: 'Live your life', d: 'No daily check-ins. The app learns your patterns and surfaces a nudge only when needed.' },
   ];
   return (
@@ -641,13 +641,13 @@ function StressSection() {
             The first thing to slip <span style={{ fontStyle: 'italic', color: C.coral }}>isn't mood.</span>
           </h2>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 540 }}>
-            Chronic stress is the most established cause of depression onset and relapse — through HPA axis dysregulation, cortisol-driven changes to mood-regulating brain regions, and a measurable drop in heart rate variability. BioTrax tracks that same biomarker continuously through your Apple Watch.
+            Unchecked burnout is the most established precursor to depressive episodes. Before mood crashes, chronic stress drives measurable drops in your heart rate variability (HRV) and dysregulates your nervous system. BioTrax tracks these exact biomarkers continuously through your Apple Watch, catching the slide before it happens.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              ['Clinical-grade HRV', 'Continuous SDNN and RMSSD readings — the metrics validated in longitudinal depression research.'],
-              ['Patterns, not check-ins', 'Weeks of context, not anxious daily questions. Stress trends often shift before mood does.'],
-              ['The earliest signal', 'Reduced HRV is one of the first measurable changes in many relapse trajectories.'],
+              ['Clinical-grade HRV', 'Continuous SDNN and RMSSD readings — the exact metrics validated in longitudinal depression and burnout research.'],
+              ['Patterns, not check-ins', 'Weeks of context, not anxious daily questions. Stress trends often shift weeks before a depressive slump begins.'],
+              ['The earliest signal', 'Reduced HRV is one of the first measurable changes in nervous system collapse.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
                 <div className="bullet-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: C.coral, marginTop: 7, '--pulse-color': 'rgba(251,146,60,0.55)' }} />
@@ -697,7 +697,7 @@ function CoachSection() {
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 14 : 32, alignItems: 'flex-end' }}>
             <PhoneWithLabel src="/assets/member.png" label="Member"   sublabel="your daily companion" width={isMobile ? 150 : 260} tilt={-3} />
-            <PhoneWithLabel src="/assets/coach.jpg"  label="Coach App" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
+            <PhoneWithLabel src="/assets/coach.jpg"  label="Trusted Contact" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
           </div>
         </div>
 
@@ -707,14 +707,14 @@ function CoachSection() {
             Better with someone <span style={{ fontStyle: 'italic', color: C.green }}>in your corner.</span>
           </h2>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, lineHeight: 1.6, color: C.inkDim, maxWidth: 480 }}>
-            BioTrax can stay just yours. When you're ready, one tap invites someone you trust — a coach, a friend, a clinician — to walk alongside you. Same app. Coach profile. Only what you've chosen to share.
+            BioTrax can stay just yours. When you're ready, one tap invites someone you trust — a partner, a friend, a clinician — to act as your safety net. Same app. Companion profile. Only what you've chosen to share.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              ['One-tap invitation', 'Send a private code. Your coach installs BioTrax and joins in seconds — no separate account, no separate app.'],
-              ['You choose what they see', 'Toggle each signal on, off, or paused — anytime. Pause coach sharing entirely with one switch.'],
+              ['One-tap invitation', 'Send a private code. Your contact installs BioTrax and joins in seconds — no separate account, no separate app.'],
+              ['You choose what they see', 'Toggle each signal on, off, or paused — anytime. Pause sharing entirely with one switch.'],
               ['Check-ins on your rhythm', 'Pick days that work for both of you. One tap to say "I\'m here." No streaks to maintain, no guilt for missed days.'],
-              ['A gentle voice for both', 'BioTrax surfaces a small action for you. Your coach sees a calm overview — never raw data.'],
+              ['A gentle voice for both', 'BioTrax surfaces a small action for you. Your contact sees a calm overview — never raw data.'],
             ].map(([t, d]) => (
               <div key={t} style={{ display: 'grid', gridTemplateColumns: '24px 1fr', gap: 14, alignItems: 'flex-start' }}>
                 <div className="bullet-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: C.green, marginTop: 7, '--pulse-color': 'rgba(52,211,153,0.55)' }} />
@@ -778,13 +778,13 @@ function Caregivers() {
           They get a heads-up. <span style={{ fontStyle: 'italic', color: C.green }}>You stay in control.</span>
         </h2>
         <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 17, lineHeight: 1.55, color: C.inkDim, maxWidth: 600 }}>
-          Coaches see a gentle overview — patterns, not raw data. They get a quiet alert if your wellness score drops below 40 — with a tap to reach out.
+          Trusted contacts see a gentle overview — patterns, not raw data. They get a quiet alert if your Baseline Score drops below 40 — with a tap to reach out.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24, marginTop: isMobile ? 28 : 48, width: '100%', textAlign: 'left' }}>
           {[
-            { who: "IF YOU'RE THE USER", t: 'No surveillance.', items: ['No daily mood prompts', 'No streaks to maintain', 'You choose what your coach sees', 'Pause coach sharing anytime'] },
-            { who: "IF YOU'RE THE COACH", t: 'An overview, not a feed.', items: ['A wellness score and status — updated when they sync', 'Patterns across sleep, stress, social and home', 'Send a gentle nudge in one tap', 'Only what they\'ve chosen to share'] },
+            { who: "IF YOU'RE THE USER", t: 'No surveillance.', items: ['No daily mood prompts', 'No streaks to maintain', 'You choose what your contact sees', 'Pause sharing anytime'] },
+            { who: "IF YOU'RE THE CONTACT", t: 'An overview, not a feed.', items: ['A Baseline Score and status — updated when they sync', 'Patterns across sleep, stress, social and home', 'Send a gentle nudge in one tap', 'Only what they\'ve chosen to share'] },
           ].map((c, i) => (
             <div key={i} style={{
               border: `1px solid ${C.border}`, borderRadius: 24, padding: isMobile ? 24 : 32,
@@ -930,7 +930,7 @@ function ScorePlayground() {
     ? 'Holding steady. BioTrax surfaces a quiet nudge if any signal slips further.'
     : total >= 40
     ? 'Patterns are wobbling. BioTrax proposes one small action — a walk, a breath, a check-in.'
-    : 'Score is critical. A push notification reaches your coach with a check-in prompt.';
+    : 'Score is critical. A push notification reaches your trusted contact with a check-in prompt.';
 
   const coachState = total >= 75
     ? { dot: C.green, text: 'Status: Monitoring — all signals within normal range' }
@@ -938,7 +938,7 @@ function ScorePlayground() {
     ? { dot: C.amber, text: 'Status: One signal trending — watching, no action yet' }
     : total >= 40
     ? { dot: '#f97316', text: 'Status: Proposing a single action this afternoon' }
-    : { dot: '#ef4444', text: 'Status: Coach notified — check-in requested' };
+    : { dot: '#ef4444', text: 'Status: Contact notified — check-in requested' };
 
   return (
     <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, background: C.bg, position: 'relative', overflow: 'hidden' }}>
@@ -1029,7 +1029,7 @@ function Privacy() {
     <section style={{ padding: isMobile ? '48px 20px' : '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 24 : 40, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
         <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 26 : 36, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5, color: C.ink, maxWidth: 480 }}>
-          Your data <span style={{ fontStyle: 'italic', color: C.green }}>never leaves the device</span> — until you choose a coach.
+          Your data <span style={{ fontStyle: 'italic', color: C.green }}>never leaves the device</span> — until you choose a trusted contact.
         </h3>
         <div style={{ display: 'flex', gap: isMobile ? 16 : 32, flexWrap: 'wrap' }}>
           {['HealthKit', 'Screen Time API', 'CoreLocation', 'On-device ML'].map(t => (
@@ -1119,11 +1119,11 @@ function Footer() {
             <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax</span>
           </div>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, maxWidth: 280, lineHeight: 1.5 }}>
-            Quiet support, in the background. A depression coach and relapse-prevention system for iPhone and Apple Watch.
+            Quiet support, in the background. A passive early-warning system for burnout and nervous system load, built for iPhone and Apple Watch.
           </p>
         </div>
         {[
-          { t: 'Product', l: ['Shared Support', 'Wellness Score', 'Privacy', 'Pricing'] },
+          { t: 'Product', l: ['Shared Support', 'Baseline Score', 'Privacy', 'Pricing'] },
           { t: 'Company', l: ['About', 'Investors', 'Press', 'Contact'] },
           { t: 'Legal', l: ['Privacy policy', 'Terms', 'HIPAA notice', 'Disclosures'] },
         ].map(col => (
@@ -1162,8 +1162,8 @@ function SectionHeader({ kicker, title, sub, align = 'left' }) {
 // ─────────────────────────── Headline variants ───────────────────────────
 const HEADLINES = {
   warm: {
-    h1: [{ t: "You don't have to do this " }, { t: 'alone.', italic: true }],
-    sub: "BioTrax is a depression coach and relapse-prevention system. It learns your patterns from your watch, and quietly tells someone you trust when the days get heavy.",
+    h1: [{ t: 'See burnout ' }, { t: 'coming.', italic: true }],
+    sub: "BioTrax is a passive monitor for your nervous system. It learns your baseline from your Apple Watch, and quietly alerts a trusted contact before you hit a wall.",
   },
   premium: {
     h1: [{ t: "A safety net you can't " }, { t: 'see.', italic: true }],
