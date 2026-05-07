@@ -155,7 +155,7 @@ function TiltPhone({ src, width = 360, alt }) {
         padding: '40px 20px',
       }}
     >
-      <div style={{
+      <div className={tilt.active ? '' : 'biotrax-breath'} style={{
         position: 'absolute',
         width: 480, height: 480,
         left: `calc(${tilt.mx}% - 240px)`,

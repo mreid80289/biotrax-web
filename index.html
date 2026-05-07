@@ -51,8 +51,22 @@
     .bullet-pulse {
       animation: biotrax-bullet-pulse 2.4s infinite ease-out;
     }
+
+    /* Slow breath-rhythm opacity pulse for the hero phone glow halo —
+       roughly 10 breaths per minute (resting respiration), the cadence
+       most wellness apps target for "calm" framing. Pauses on mouse
+       interaction so the active tilt feels distinct. */
+    @keyframes biotrax-breath {
+      0%, 100% { opacity: 0.75; }
+      50%      { opacity: 1;    }
+    }
+    .biotrax-breath {
+      animation: biotrax-breath 6s infinite ease-in-out;
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .bullet-pulse { animation: none; }
+      .bullet-pulse   { animation: none; }
+      .biotrax-breath { animation: none; }
     }
   </style>
 </head>
