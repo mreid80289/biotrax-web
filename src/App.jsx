@@ -513,7 +513,7 @@ function Tracks() {
     {
       kicker: '02 / STRESS',
       title: 'HRV, watched all day.',
-      body: 'Continuous SDNN and RMSSD from the Watch — the validated clinical biomarker for depression risk.',
+      body: 'Continuous SDNN and RMSSD from the Watch — the validated clinical biomarker for nervous system load and stress resilience.',
       src: '/assets/stress.png',
       accent: C.coral,
     },
@@ -527,7 +527,7 @@ function Tracks() {
     {
       kicker: '04 / CONNECTION',
       title: 'Communication vs. doomscroll.',
-      body: 'Active comms minutes versus passive social media — the cleanest signal of withdrawal.',
+      body: 'Active comms minutes versus passive social media — the cleanest signal of social withdrawal.',
       src: '/assets/social.png',
       accent: C.blue,
     },
@@ -570,7 +570,7 @@ function HowItWorks() {
   const isMobile = useIsMobile();
   const steps = [
     { n: '01', t: 'Pair your watch', d: 'BioTrax pulls sleep, HRV and steps through HealthKit. No setup beyond one tap.' },
-    { n: '02', t: 'Choose a trusted contact', d: 'One person in your corner. They get a quiet alert only if your score falls below 40.' },
+    { n: '02', t: 'Choose a trusted contact', d: 'One person in your corner. They get a quiet alert only if your Baseline Score falls below 40.' },
     { n: '03', t: 'Live your life', d: 'No daily check-ins. The app learns your patterns and surfaces a nudge only when needed.' },
   ];
   return (
@@ -696,8 +696,8 @@ function CoachSection() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 14 : 32, alignItems: 'flex-end' }}>
-            <PhoneWithLabel src="/assets/member.png" label="Member"   sublabel="your daily companion" width={isMobile ? 150 : 260} tilt={-3} />
-            <PhoneWithLabel src="/assets/coach.jpg"  label="Trusted Contact" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
+            <PhoneWithLabel src="/assets/member.png" label="Your View"      sublabel="your daily companion" width={isMobile ? 150 : 260} tilt={-3} />
+            <PhoneWithLabel src="/assets/coach.jpg"  label="Companion View" sublabel="their gentle view"     width={isMobile ? 150 : 260} tilt={3} />
           </div>
         </div>
 
@@ -1119,7 +1119,7 @@ function Footer() {
             <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax</span>
           </div>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, maxWidth: 280, lineHeight: 1.5 }}>
-            Quiet support, in the background. A passive early-warning system for burnout and nervous system load, built for iPhone and Apple Watch.
+            Quiet support, in the background. A passive early-warning system for your mental health, built for iPhone and Apple Watch.
           </p>
         </div>
         {[
@@ -1162,20 +1162,8 @@ function SectionHeader({ kicker, title, sub, align = 'left' }) {
 // ─────────────────────────── Headline variants ───────────────────────────
 const HEADLINES = {
   warm: {
-    h1: [{ t: 'See burnout ' }, { t: 'coming.', italic: true }],
-    sub: "BioTrax is a passive monitor for your nervous system. It learns your baseline from your Apple Watch, and quietly alerts a trusted contact before you hit a wall.",
-  },
-  premium: {
-    h1: [{ t: "A safety net you can't " }, { t: 'see.', italic: true }],
-    sub: "Continuous wellness intelligence for iPhone and Apple Watch. BioTrax watches sleep, stress and isolation — and surfaces help only when it's needed.",
-  },
-  direct: {
-    h1: [{ t: 'Depression has patterns. ' }, { t: 'Now you have a partner.', italic: true }],
-    sub: "BioTrax detects relapse precursors days earlier than self-report — and pings one trusted person when your wellness score drops below 40.",
-  },
-  poetic: {
-    h1: [{ t: 'When the days get ' }, { t: 'heavy,', italic: true }, { t: ' someone notices.' }],
-    sub: "A quiet partnership between two phones. BioTrax watches the patterns your watch can see — sleep, stress, isolation — so the people you love don't have to guess.",
+    h1: [{ t: 'The first signal is ' }, { t: 'the quietest.', italic: true }],
+    sub: "BioTrax is an early-warning system for your mental health. By passively tracking your stress and sleep, it quietly alerts someone in your corner before a slump takes over.",
   },
 };
 
