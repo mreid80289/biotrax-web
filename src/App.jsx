@@ -477,7 +477,7 @@ function Hero({ headline }) {
           </div>
           <div style={{ display: 'flex', gap: isMobile ? 20 : 28, marginTop: 16, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
             {[
-              ['100%', 'On-device data'],
+              ['100%', 'Encrypted by default'],
               ['0', 'Daily check-ins'],
               ['1', 'Trusted contact'],
             ].map(([v, l]) => (
@@ -505,7 +505,7 @@ function Tracks() {
     {
       kicker: '01 / SLEEP',
       title: 'Sleep architecture, scored.',
-      body: 'Total time, efficiency, continuity, breathing rate. Below 5h or above 10h triggers a flag.',
+      body: 'Total time, efficiency, continuity, breathing rate. Below 5h or above 10h, BioTrax surfaces a quiet check-in.',
       src: '/assets/sleep.png',
       accent: C.amber,
     },
@@ -644,7 +644,7 @@ function StressSection() {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              ['Clinical-grade HRV', 'Continuous SDNN and RMSSD readings — the exact metrics validated in longitudinal depression and burnout research.'],
+              ['Validated HRV', 'Continuous SDNN and RMSSD readings — the exact metrics validated in longitudinal depression and burnout research.'],
               ['Patterns, not check-ins', 'Weeks of context, not anxious daily questions. Stress trends often shift weeks before a depressive slump begins.'],
               ['The earliest signal', 'Reduced HRV is one of the first measurable changes in nervous system collapse.'],
             ].map(([t, d]) => (
@@ -1028,7 +1028,7 @@ function Privacy() {
     <section style={{ padding: isMobile ? '48px 20px' : '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 24 : 40, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
         <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 26 : 36, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5, color: C.ink, maxWidth: 480 }}>
-          Your data <span style={{ fontStyle: 'italic', color: C.green }}>never leaves the device</span> — until you choose a trusted contact.
+          Your data <span style={{ fontStyle: 'italic', color: C.green }}>stays on your device</span> — and is end-to-end encrypted the moment you share with a trusted contact.
         </h3>
         <div style={{ display: 'flex', gap: isMobile ? 16 : 32, flexWrap: 'wrap' }}>
           {['HealthKit', 'Screen Time API', 'CoreLocation', 'On-device ML'].map(t => (
@@ -1191,7 +1191,7 @@ function Footer() {
         {[
           { t: 'Product', l: ['Shared Support', 'Baseline Score', 'Privacy', 'Pricing'] },
           { t: 'Company', l: ['About', 'Investors', 'Press', 'Contact'] },
-          { t: 'Legal', l: ['Privacy policy', 'Terms', 'HIPAA notice', 'Disclosures'] },
+          { t: 'Legal', l: ['Privacy policy', 'Terms', 'Data practices', 'Disclosures'] },
         ].map(col => (
           <div key={col.t} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>{col.t}</div>
