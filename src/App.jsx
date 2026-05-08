@@ -674,7 +674,7 @@ function StressSection() {
 function CoachSection() {
   const isMobile = useIsMobile();
   return (
-    <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
+    <section id="shared-support" style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', top: '20%', left: '10%', width: 500, height: 500,
         background: 'radial-gradient(circle, rgba(52,211,153,0.10), transparent 60%)',
@@ -940,7 +940,7 @@ function ScorePlayground() {
     : { dot: '#ef4444', text: 'Status: Contact notified — check-in requested' };
 
   return (
-    <section style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, background: C.bg, position: 'relative', overflow: 'hidden' }}>
+    <section id="baseline-score" style={{ padding: isMobile ? '64px 20px' : '140px 48px', borderTop: `1px solid ${C.border}`, background: C.bg, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 50% 50% at 50% 30%, rgba(52,211,153,0.10), transparent 60%)',
@@ -1025,7 +1025,7 @@ function ScorePlayground() {
 function Privacy() {
   const isMobile = useIsMobile();
   return (
-    <section style={{ padding: isMobile ? '48px 20px' : '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
+    <section id="privacy" style={{ padding: isMobile ? '48px 20px' : '70px 48px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 24 : 40, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
         <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 26 : 36, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5, color: C.ink, maxWidth: 480 }}>
           Your data <span style={{ fontStyle: 'italic', color: C.green }}>stays on your device</span> — and is end-to-end encrypted the moment you share with a trusted contact.
@@ -1178,25 +1178,32 @@ function Footer() {
   const isMobile = useIsMobile();
   return (
     <footer style={{ padding: isMobile ? '40px 20px 32px' : '60px 48px 40px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '1.5fr 1fr 1fr 1fr', gap: isMobile ? 28 : 40 }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '2fr 1fr 1fr', gap: isMobile ? 28 : 40 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, gridColumn: isMobile ? '1 / -1' : 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Logo size={28} />
             <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax</span>
           </div>
-          <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, maxWidth: 280, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, maxWidth: 320, lineHeight: 1.5 }}>
             Quiet support, in the background. A passive early-warning system for your mental health, built for iPhone and Apple Watch.
           </p>
         </div>
         {[
-          { t: 'Product', l: ['Shared Support', 'Baseline Score', 'Privacy', 'Pricing'] },
-          { t: 'Company', l: ['About', 'Investors', 'Press', 'Contact'] },
-          { t: 'Legal', l: ['Privacy policy', 'Terms', 'Data practices', 'Disclosures'] },
+          { t: 'Explore', l: [
+            { label: 'Shared Support', href: '#shared-support' },
+            { label: 'Baseline Score', href: '#baseline-score' },
+            { label: 'How It Works',   href: '#how-it-works' },
+            { label: 'Privacy',        href: '#privacy' },
+          ]},
+          { t: 'Get in touch', l: [
+            { label: 'Join the Waitlist', href: '#waitlist' },
+            { label: 'hello@biotrax.com', href: 'mailto:hello@biotrax.com' },
+          ]},
         ].map(col => (
           <div key={col.t} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>{col.t}</div>
             {col.l.map(x => (
-              <a key={x} href="#" style={{ fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, textDecoration: 'none' }}>{x}</a>
+              <a key={x.label} href={x.href} style={{ fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, textDecoration: 'none' }}>{x.label}</a>
             ))}
           </div>
         ))}
