@@ -1178,7 +1178,7 @@ function Footer() {
   const isMobile = useIsMobile();
   return (
     <footer style={{ padding: isMobile ? '40px 20px 32px' : '60px 48px 40px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '2fr 1fr 1fr', gap: isMobile ? 28 : 40 }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '2fr 1fr', gap: isMobile ? 28 : 40 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, gridColumn: isMobile ? '1 / -1' : 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Logo size={28} />
@@ -1190,14 +1190,11 @@ function Footer() {
         </div>
         {[
           { t: 'Explore', l: [
-            { label: 'Shared Support', href: '#shared-support' },
-            { label: 'Baseline Score', href: '#baseline-score' },
-            { label: 'How It Works',   href: '#how-it-works' },
-            { label: 'Privacy',        href: '#privacy' },
-          ]},
-          { t: 'Get in touch', l: [
+            { label: 'Shared Support',    href: '#shared-support' },
+            { label: 'Baseline Score',    href: '#baseline-score' },
+            { label: 'How It Works',      href: '#how-it-works' },
+            { label: 'Privacy',           href: '#privacy' },
             { label: 'Join the Waitlist', href: '#waitlist' },
-            { label: 'hello@biotrax.com', href: 'mailto:hello@biotrax.com' },
           ]},
         ].map(col => (
           <div key={col.t} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
