@@ -1,4 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, Link, NavLink } from 'react-router-dom';
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
+import Terms from './pages/Terms.jsx';
+import Support from './pages/Support.jsx';
+import FAQ from './pages/FAQ.jsx';
 
 const C = {
   bg: '#0a0d0c',
@@ -282,19 +287,37 @@ function Logo({ size = 28 }) {
 function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { pathname } = useLocation();
 
-  // Close menu on link tap
-  const closeAndScroll = (id) => {
+  // Smooth-scroll to an in-page anchor. If the user isn't currently on
+  // the homepage, navigate there first and let the hash do the scroll
+  // after the homepage renders.
+  const goToAnchor = (id) => {
     setMenuOpen(false);
-    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 50);
+    if (pathname === '/') {
+      // Already on home — scroll directly.
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 30);
+    } else {
+      // Different page — go home with the hash, then the homepage's
+      // mount effect (smooth scroll-behavior on <html>) handles the jump.
+      window.location.href = `/#${id}`;
+    }
   };
 
+  // Mix of in-page anchors (homepage sections) and real routes (FAQ, Support).
   const links = [
-    { l: 'Shared Support', id: null },
-    { l: 'How It Works', id: 'how-it-works' },
-    { l: 'The App', id: null },
-    { l: 'Investors', id: null },
+    { l: 'Shared Support', kind: 'anchor', target: 'shared-support' },
+    { l: 'How It Works',   kind: 'anchor', target: 'how-it-works' },
+    { l: 'FAQ',            kind: 'route',  target: '/faq' },
+    { l: 'Support',        kind: 'route',  target: '/support' },
   ];
+
+  // Brand mark click — always goes home.
+  const goHome = () => {
+    setMenuOpen(false);
+    if (pathname !== '/') window.location.href = '/';
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <nav style={{
@@ -307,24 +330,31 @@ function Nav() {
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       fontFamily: fontBody,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <button onClick={goHome} aria-label="BioTrax — home" style={{
+        background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
         <Logo size={26} />
         <span style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: C.ink }}>BioTrax</span>
-      </div>
+      </button>
 
       {!isMobile && (
         <>
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-            {links.map(({ l, id }) => (
-              <a key={l} href={id ? `#${id}` : '#'}
-                onClick={(e) => { if (id) { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); } }}
-                style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>{l}</a>
-            ))}
+            {links.map(({ l, kind, target }) =>
+              kind === 'route' ? (
+                <Link key={l} to={target}
+                  style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>{l}</Link>
+              ) : (
+                <a key={l} href={`/#${target}`}
+                  onClick={(e) => { e.preventDefault(); goToAnchor(target); }}
+                  style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>{l}</a>
+              )
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <a href="#" style={{ fontSize: 13.5, color: C.inkDim, textDecoration: 'none', fontWeight: 450 }}>Sign in</a>
             <button
-              onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => goToAnchor('waitlist')}
               style={{
                 background: C.green, color: '#04201a',
                 border: 'none', padding: '9px 18px', borderRadius: 999,
@@ -374,27 +404,35 @@ function Nav() {
           zIndex: 49,
           animation: 'fadeIn 0.2s ease-out',
         }}>
-          {links.map(({ l, id }) => (
-            <a
-              key={l}
-              href={id ? `#${id}` : '#'}
-              onClick={(e) => { if (id) { e.preventDefault(); closeAndScroll(id); } else { setMenuOpen(false); } }}
-              style={{
-                fontFamily: fontDisplay, fontSize: 32, fontWeight: 400,
-                color: C.ink, textDecoration: 'none',
-                padding: '16px 4px',
-                borderBottom: `1px solid ${C.border}`,
-                letterSpacing: -0.5,
-              }}>{l}</a>
-          ))}
-          <a href="#" onClick={() => setMenuOpen(false)}
-            style={{
-              fontFamily: fontBody, fontSize: 15, fontWeight: 500,
-              color: C.inkDim, textDecoration: 'none',
-              padding: '20px 4px 12px',
-            }}>Sign in</a>
+          {links.map(({ l, kind, target }) =>
+            kind === 'route' ? (
+              <Link
+                key={l}
+                to={target}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  fontFamily: fontDisplay, fontSize: 32, fontWeight: 400,
+                  color: C.ink, textDecoration: 'none',
+                  padding: '16px 4px',
+                  borderBottom: `1px solid ${C.border}`,
+                  letterSpacing: -0.5,
+                }}>{l}</Link>
+            ) : (
+              <a
+                key={l}
+                href={`/#${target}`}
+                onClick={(e) => { e.preventDefault(); goToAnchor(target); }}
+                style={{
+                  fontFamily: fontDisplay, fontSize: 32, fontWeight: 400,
+                  color: C.ink, textDecoration: 'none',
+                  padding: '16px 4px',
+                  borderBottom: `1px solid ${C.border}`,
+                  letterSpacing: -0.5,
+                }}>{l}</a>
+            )
+          )}
           <button
-            onClick={() => closeAndScroll('waitlist')}
+            onClick={() => goToAnchor('waitlist')}
             style={{
               marginTop: 16,
               background: C.green, color: '#04201a',
@@ -1176,10 +1214,30 @@ function Waitlist() {
 // ─────────────────────────── Footer ───────────────────────────
 function Footer() {
   const isMobile = useIsMobile();
+  const exploreCol = [
+    { label: 'Shared Support',    href: '/#shared-support' },
+    { label: 'Baseline Score',    href: '/#baseline-score' },
+    { label: 'How It Works',      href: '/#how-it-works' },
+    { label: 'Privacy',           href: '/#privacy' },
+    { label: 'Join the Waitlist', href: '/#waitlist' },
+  ];
+  const helpCol = [
+    { label: 'Support',  href: '/support' },
+    { label: 'FAQ',      href: '/faq' },
+  ];
+  const legalCol = [
+    { label: 'Privacy policy', href: '/privacy-policy' },
+    { label: 'Terms',          href: '/terms' },
+  ];
+  const socials = [
+    { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/biotrax/about/?viewAsMember=true', icon: 'linkedin' },
+    { label: 'Instagram', href: 'https://www.instagram.com/biotrax_coach/',                          icon: 'instagram' },
+    { label: 'Facebook',  href: 'https://www.facebook.com/BiotraxApp/',                              icon: 'facebook' },
+  ];
   return (
     <footer style={{ padding: isMobile ? '40px 20px 32px' : '60px 48px 40px', borderTop: `1px solid ${C.border}`, background: '#040605' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '2fr 1fr', gap: isMobile ? 28 : 40 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, gridColumn: isMobile ? '1 / -1' : 'auto' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '2fr 1fr 1fr 1fr', gap: isMobile ? 28 : 40 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, gridColumn: isMobile ? '1 / -1' : 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Logo size={28} />
             <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax</span>
@@ -1187,30 +1245,78 @@ function Footer() {
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, maxWidth: 320, lineHeight: 1.5 }}>
             Quiet support, in the background. A passive early-warning system for your mental health, built for iPhone and Apple Watch.
           </p>
+          <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+            {socials.map(s => (
+              <a key={s.icon} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}
+                 title={s.label}
+                 style={{
+                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                   width: 36, height: 36, borderRadius: '50%',
+                   border: `1px solid ${C.borderStrong}`,
+                   color: C.inkDim, textDecoration: 'none',
+                   transition: 'border-color 0.2s, color 0.2s',
+                 }}
+                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(52,211,153,0.4)'; e.currentTarget.style.color = C.green; }}
+                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.borderStrong; e.currentTarget.style.color = C.inkDim; }}
+              >
+                <SocialIcon name={s.icon} />
+              </a>
+            ))}
+          </div>
         </div>
         {[
-          { t: 'Explore', l: [
-            { label: 'Shared Support',    href: '#shared-support' },
-            { label: 'Baseline Score',    href: '#baseline-score' },
-            { label: 'How It Works',      href: '#how-it-works' },
-            { label: 'Privacy',           href: '#privacy' },
-            { label: 'Join the Waitlist', href: '#waitlist' },
-          ]},
+          { t: 'Explore', l: exploreCol },
+          { t: 'Help',    l: helpCol },
+          { t: 'Legal',   l: legalCol },
         ].map(col => (
           <div key={col.t} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>{col.t}</div>
-            {col.l.map(x => (
-              <a key={x.label} href={x.href} style={{ fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, textDecoration: 'none' }}>{x.label}</a>
-            ))}
+            {col.l.map(x => {
+              // External hash links use <a>; internal route links use <Link>
+              const isInternalRoute = x.href.startsWith('/') && !x.href.startsWith('/#');
+              return isInternalRoute ? (
+                <Link key={x.label} to={x.href} style={{ fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, textDecoration: 'none' }}>{x.label}</Link>
+              ) : (
+                <a key={x.label} href={x.href} style={{ fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, textDecoration: 'none' }}>{x.label}</a>
+              );
+            })}
           </div>
         ))}
       </div>
       <div style={{ maxWidth: 1280, margin: '40px auto 0', paddingTop: 24, borderTop: `1px solid ${C.border}`, display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 10 : 0, justifyContent: 'space-between', fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.4 }}>
-        <div>© 2026 BIOTRAX HEALTH, INC.</div>
-        <div>NOT A SUBSTITUTE FOR PROFESSIONAL CARE. IF IN CRISIS, CALL 988.</div>
+        <div>© 2026 BIOTRAX</div>
+        <div>NOT A SUBSTITUTE FOR PROFESSIONAL CARE · IF IN CRISIS, CALL 112 (SE) · 988 (US)</div>
       </div>
     </footer>
   );
+}
+
+// Tiny inline SVG icons for the three socials. Pure SVG keeps bundle
+// size near zero — no icon library dependency.
+function SocialIcon({ name }) {
+  const common = { width: 16, height: 16, fill: 'currentColor', xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 24 24' };
+  if (name === 'linkedin') {
+    return (
+      <svg {...common} aria-hidden="true">
+        <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.34 18.34H5.67V9.67h2.67v8.67zM7 8.5a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zm11.34 9.84h-2.67v-4.5c0-1.07-.02-2.45-1.5-2.45-1.5 0-1.73 1.17-1.73 2.37v4.58H9.77V9.67h2.56v1.18h.04a2.81 2.81 0 0 1 2.53-1.39c2.71 0 3.21 1.78 3.21 4.1v4.78z"/>
+      </svg>
+    );
+  }
+  if (name === 'instagram') {
+    return (
+      <svg {...common} aria-hidden="true">
+        <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.86 5.86 0 0 0-2.13 1.38A5.86 5.86 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.73 1.46 1.38 2.13a5.86 5.86 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.86 5.86 0 0 0 2.13-1.38 5.86 5.86 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.13A5.86 5.86 0 0 0 19.86.63C19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zm0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/>
+      </svg>
+    );
+  }
+  if (name === 'facebook') {
+    return (
+      <svg {...common} aria-hidden="true">
+        <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11.02 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.09 24 18.09 24 12.07z"/>
+      </svg>
+    );
+  }
+  return null;
 }
 
 // ─────────────────────────── Section Header ───────────────────────────
@@ -1237,12 +1343,11 @@ const HEADLINES = {
   },
 };
 
-// ─────────────────────────── App ───────────────────────────
-export default function App() {
+// ─────────────────────────── Page: Home ───────────────────────────
+function Home() {
   const headline = HEADLINES.warm;
   return (
-    <div style={{ background: C.bg, minHeight: '100vh', color: C.ink, fontFamily: fontBody }}>
-      <Nav />
+    <>
       <Hero headline={headline} />
       <Tracks />
       <HowItWorks />
@@ -1253,7 +1358,40 @@ export default function App() {
       <ScorePlayground />
       <Privacy />
       <Waitlist />
-      <Footer />
-    </div>
+    </>
+  );
+}
+
+// ─────────────────────────── App ───────────────────────────
+// Routed shell: every page sits between the same Nav and Footer so
+// brand surfaces (logo, links, colour world) are consistent across
+// the homepage and the legal/support/FAQ pages.
+
+// Reset scroll to top whenever the route changes — without this,
+// clicking a footer link on /privacy-policy keeps the scroll position
+// from the previous page, which feels broken.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <ScrollToTop />
+      <div style={{ background: C.bg, minHeight: '100vh', color: C.ink, fontFamily: fontBody }}>
+        <Nav />
+        <Routes>
+          <Route path="/"               element={<Home />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms"          element={<Terms />} />
+          <Route path="/support"        element={<Support />} />
+          <Route path="/faq"            element={<FAQ />} />
+          <Route path="*"               element={<Home />} />
+        </Routes>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
