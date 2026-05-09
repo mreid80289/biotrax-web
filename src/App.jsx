@@ -549,8 +549,8 @@ function Tracks() {
     },
     {
       kicker: '02 / STRESS',
-      title: 'HRV, watched all day.',
-      body: 'Continuous SDNN and RMSSD from the Watch — the validated clinical biomarker for nervous system load and stress resilience.',
+      title: 'Stress, watched all day.',
+      body: 'Continuous heart rate variability (HRV) from the Apple Watch — the most studied physiological signal of nervous system load and stress resilience.',
       src: '/assets/stress.png',
       accent: C.coral,
     },
@@ -682,7 +682,7 @@ function StressSection() {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              ['Validated HRV', 'Continuous SDNN and RMSSD readings — the exact metrics validated in longitudinal depression and burnout research.'],
+              ['Research-backed HRV', 'Continuous SDNN and RMSSD readings — heart rate variability metrics studied for decades in stress and mental-health research.'],
               ['Patterns, not check-ins', 'Weeks of context, not anxious daily questions. Stress trends often shift weeks before a depressive slump begins.'],
               ['The earliest signal', 'Reduced HRV is one of the first measurable changes in nervous system collapse.'],
             ].map(([t, d]) => (
