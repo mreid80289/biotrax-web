@@ -211,7 +211,7 @@ function TiltPhone({ src, width = 360, alt }) {
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
         }}>
-          <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}`, marginRight: 8, verticalAlign: 'middle' }} />
+          <span className="biotrax-chip-dot" style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}`, marginRight: 8, verticalAlign: 'middle' }} />
           SCORE 77
         </div>
         <div className="biotrax-chip biotrax-chip-stress" style={{
@@ -231,7 +231,7 @@ function TiltPhone({ src, width = 360, alt }) {
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
         }}>
-          <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}`, marginRight: 8, verticalAlign: 'middle' }} />
+          <span className="biotrax-chip-dot" style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: C.blue, boxShadow: `0 0 8px ${C.blue}`, marginRight: 8, verticalAlign: 'middle' }} />
           STRESS MODERATE
         </div>
         <div className="biotrax-chip biotrax-chip-contact" style={{
