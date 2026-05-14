@@ -90,12 +90,12 @@
     .biotrax-chip {
       opacity: 0;
       animation-fill-mode: forwards;
-      animation-duration: 700ms;
+      animation-duration: 900ms;
       animation-timing-function: cubic-bezier(.2,.7,.3,1);
     }
-    .biotrax-chip-score   { animation-name: biotrax-chip-from-left;         animation-delay:  800ms; }
-    .biotrax-chip-stress  { animation-name: biotrax-chip-from-right-top;    animation-delay: 1400ms; }
-    .biotrax-chip-contact { animation-name: biotrax-chip-from-right-bottom; animation-delay: 2000ms; }
+    .biotrax-chip-score   { animation-name: biotrax-chip-from-left;         animation-delay: 1500ms; }
+    .biotrax-chip-stress  { animation-name: biotrax-chip-from-right-top;    animation-delay: 3500ms; }
+    .biotrax-chip-contact { animation-name: biotrax-chip-from-right-bottom; animation-delay: 5500ms; }
 
     /* Continuous, gentle breath pulse on each chip's status dot —
        gives the hero a subtle 'alive, monitoring' feel without any
@@ -120,15 +120,15 @@
     }
     .biotrax-chip-score   .biotrax-chip-dot {
       animation: biotrax-dot-breath-green 3.2s ease-in-out infinite;
-      animation-delay: 3000ms;  /* starts after the chip's entry settles (~2700ms) */
+      animation-delay: 2700ms;  /* starts ~300ms after Score chip settles */
     }
     .biotrax-chip-stress  .biotrax-chip-dot {
       animation: biotrax-dot-breath-blue 3.2s ease-in-out infinite;
-      animation-delay: 3700ms;  /* +700ms phase offset vs Score */
+      animation-delay: 4700ms;  /* starts ~300ms after Stress chip settles */
     }
     .biotrax-chip-contact .biotrax-chip-dot {
       animation: biotrax-dot-breath-green 3.2s ease-in-out infinite;
-      animation-delay: 4400ms;  /* +700ms phase offset vs Stress */
+      animation-delay: 6700ms;  /* starts ~300ms after Contact chip settles */
     }
 
     @media (prefers-reduced-motion: reduce) {
