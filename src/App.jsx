@@ -311,7 +311,7 @@ function Nav() {
     { l: 'About',          kind: 'route',  target: '/about' },
     { l: 'FAQ',            kind: 'route',  target: '/faq' },
     { l: 'Support',        kind: 'route',  target: '/support' },
-    { l: 'Shared Support', kind: 'anchor', target: 'shared-support' },
+    { l: 'Stay Connected', kind: 'anchor', target: 'shared-support' },
   ];
 
   // Brand mark click — always goes home.
@@ -1217,7 +1217,7 @@ function Waitlist() {
 function Footer() {
   const isMobile = useIsMobile();
   const exploreCol = [
-    { label: 'Shared Support',    href: '/#shared-support' },
+    { label: 'Stay Connected',    href: '/#shared-support' },
     { label: 'Baseline Score',    href: '/#baseline-score' },
     { label: 'How It Works',      href: '/#how-it-works' },
     { label: 'Privacy',           href: '/#privacy' },
