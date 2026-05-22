@@ -116,11 +116,11 @@ export default function About() {
       pageTitle="About"
       kicker="OUR STORY"
       title={<>The story behind <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', color: C.green, fontWeight: 400 }}>BioTrax.</em></>}
-      subhead="A father&ndash;son collaboration, a fifteen-year vision, and a deeply personal mission to make clinical-grade biofeedback effortless for everyone."
+      subhead="A father&ndash;son collaboration, a fifteen-year vision, and a deeply personal mission to translate clinical-grade behavioural insight into something everyone can carry on their wrist."
     >
       <Section heading="A 15-year vision">
         <P>
-          The foundation of BioTrax was laid more than 15 years ago as a collaboration between father and son. With a PhD in psychology specialising in clinical biofeedback, <Strong>Dr. Reid</Strong> spent his career treating stress, phobias, PTSD, and severe mental illness. Together, we shared a singular vision: to take the powerful, clinical benefits of biofeedback and make them accessible to the general public.
+          The foundation of BioTrax was laid more than 15 years ago as a collaboration between father and son. With a PhD in psychology specialising in clinical biofeedback, <Strong>Dr. Reid</Strong> spent his career treating stress, phobias, PTSD, and severe mental illness. Together, we shared a singular vision: to take the powerful, clinical benefits of biofeedback science and make them accessible to the general public.
         </P>
         <P>
           At the time, consumer technology couldn&rsquo;t support this vision. Driven to make it a reality, we engineered and built our own custom biofeedback hardware from scratch to begin testing and tracking behavioural states.
@@ -129,10 +129,10 @@ export default function About() {
 
       <Section heading="The breakthrough — triangulating human behaviour">
         <P>
-          For years, clinical biofeedback relied on cumbersome equipment like EEG sensors. The pivotal &ldquo;aha&rdquo; moment for BioTrax came as smartwatch technology matured. We realised that by cross-referencing passive data points &mdash; sleep patterns, heart rate variability (HRV), resting heart rate, and geolocation &mdash; we no longer needed clinical sensors.
+          For years, clinical biofeedback relied on cumbersome equipment like EEG sensors. The pivotal &ldquo;aha&rdquo; moment for BioTrax came as smartwatch technology matured. We realised we didn&rsquo;t need to deliver biofeedback at all &mdash; we could deliver something more passive and just as powerful: real-time triangulation of behavioural state from the body&rsquo;s natural biorhythms &mdash; sleep patterns, heart rate variability (HRV), resting heart rate, and geolocation.
         </P>
         <P>
-          We had enough precise data from devices like the Apple Watch to accurately triangulate a person&rsquo;s behavioural state in real time, without them ever having to log a journal entry or attach an electrode.
+          Devices like the Apple Watch already streamed the precise signals we needed, continuously and quietly &mdash; no journal entries to log, no electrodes to attach, no clinical sessions to attend.
         </P>
       </Section>
 
