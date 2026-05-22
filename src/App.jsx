@@ -4,6 +4,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import Terms from './pages/Terms.jsx';
 import Support from './pages/Support.jsx';
 import FAQ from './pages/FAQ.jsx';
+import About from './pages/About.jsx';
 
 const C = {
   bg: '#0a0d0c',
@@ -308,6 +309,7 @@ function Nav() {
   const links = [
     { l: 'Shared Support', kind: 'anchor', target: 'shared-support' },
     { l: 'How It Works',   kind: 'anchor', target: 'how-it-works' },
+    { l: 'About',          kind: 'route',  target: '/about' },
     { l: 'FAQ',            kind: 'route',  target: '/faq' },
     { l: 'Support',        kind: 'route',  target: '/support' },
   ];
@@ -1222,6 +1224,7 @@ function Footer() {
     { label: 'Join the Waitlist', href: '/#waitlist' },
   ];
   const helpCol = [
+    { label: 'About',    href: '/about' },
     { label: 'Support',  href: '/support' },
     { label: 'FAQ',      href: '/faq' },
   ];
@@ -1388,6 +1391,7 @@ export default function App() {
           <Route path="/terms"          element={<Terms />} />
           <Route path="/support"        element={<Support />} />
           <Route path="/faq"            element={<FAQ />} />
+          <Route path="/about"          element={<About />} />
           <Route path="*"               element={<Home />} />
         </Routes>
         <Footer />
