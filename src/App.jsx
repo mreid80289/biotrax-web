@@ -335,7 +335,7 @@ function Nav() {
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
         <Logo size={26} />
-        <span style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: C.ink }}>BioTrax</span>
+        <span style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: C.ink }}>BioTrax <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', fontWeight: 500, color: C.green, letterSpacing: 0 }}>Sense</em></span>
       </button>
 
       {!isMobile && (
@@ -1240,7 +1240,7 @@ function Footer() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, gridColumn: isMobile ? '1 / -1' : 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Logo size={28} />
-            <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax</span>
+            <span style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 600, color: C.ink }}>BioTrax <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', fontWeight: 500, color: C.green, letterSpacing: 0 }}>Sense</em></span>
           </div>
           <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, color: C.inkDim, maxWidth: 320, lineHeight: 1.5 }}>
             Quiet support, in the background. A passive early-warning system for your mental health, built for iPhone and Apple Watch.
@@ -1284,7 +1284,7 @@ function Footer() {
         ))}
       </div>
       <div style={{ maxWidth: 1280, margin: '40px auto 0', paddingTop: 24, borderTop: `1px solid ${C.border}`, display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 10 : 0, justifyContent: 'space-between', fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.4 }}>
-        <div>© 2026 BIOTRAX</div>
+        <div>© 2026 BIOTRAX SENSE</div>
         <div>NOT A SUBSTITUTE FOR PROFESSIONAL CARE · IF IN CRISIS, CALL 112 (SE) · 988 (US)</div>
       </div>
     </footer>
@@ -1339,7 +1339,7 @@ function SectionHeader({ kicker, title, sub, align = 'left' }) {
 const HEADLINES = {
   warm: {
     h1: [{ t: 'The first signal is ' }, { t: 'the quietest.', italic: true }],
-    sub: "BioTrax is an early-warning system for your mental health. By passively tracking your stress and sleep, it quietly alerts someone in your corner before a slump takes over.",
+    sub: "BioTrax Sense is an early-warning system for your mental health. By passively tracking your stress and sleep, it quietly alerts someone in your corner before a slump takes over.",
   },
 };
 
