@@ -1061,6 +1061,84 @@ function ScorePlayground() {
   );
 }
 
+// ─────────────────────────── Trust Strip ───────────────────────────
+// Founder credentials shown right after the hero. Two parallel lines —
+// the clinical pedigree (Dr. Reid) and the security pedigree (Michael).
+// Together they answer the trust questions a new visitor doesn't ask
+// out loud: "Who built this?" and "Can I trust them with my data?"
+function TrustStrip() {
+  const isMobile = useIsMobile();
+  const rows = [
+    {
+      kicker: 'CLINICAL',
+      body: (
+        <>Built on 20+ years of clinical biofeedback research from <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', color: C.green, fontWeight: 500 }}>Dr. Reid, PhD</em></>
+      ),
+    },
+    {
+      kicker: 'SECURITY',
+      body: (
+        <>Engineered by <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', color: C.green, fontWeight: 500 }}>Michael Reid</em> — 20+ years architecting secure enterprise systems</>
+      ),
+    },
+  ];
+  return (
+    <section
+      aria-label="Founder credentials"
+      style={{
+        padding: isMobile ? '32px 20px' : '40px 48px',
+        borderTop: `1px solid ${C.border}`,
+        borderBottom: `1px solid ${C.border}`,
+        background: C.bgAlt,
+      }}
+    >
+      <div style={{
+        maxWidth: 1280,
+        margin: '0 auto',
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        gap: isMobile ? 20 : 64,
+        alignItems: 'start',
+      }}>
+        {rows.map((r) => (
+          <div key={r.kicker} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{
+              fontFamily: fontMono,
+              fontSize: 11,
+              color: C.green,
+              letterSpacing: 1.2,
+              fontWeight: 600,
+            }}>
+              {r.kicker}
+            </div>
+            <div style={{
+              fontFamily: fontBody,
+              fontSize: isMobile ? 15 : 16.5,
+              lineHeight: 1.55,
+              color: C.inkDim,
+              maxWidth: 560,
+            }}>
+              {r.body}
+            </div>
+          </div>
+        ))}
+        <div style={{
+          gridColumn: isMobile ? '1' : '1 / -1',
+          fontFamily: fontMono,
+          fontSize: 11,
+          color: C.inkMuted,
+          letterSpacing: 0.8,
+          textTransform: 'uppercase',
+        }}>
+          <Link to="/about" style={{ color: C.inkMuted, textDecoration: 'none', borderBottom: `1px solid ${C.border}` }}>
+            Read the full story →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─────────────────────────── Privacy Strip ───────────────────────────
 function Privacy() {
   const isMobile = useIsMobile();
@@ -1076,6 +1154,141 @@ function Privacy() {
               <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>{t}</div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────── Home FAQ ───────────────────────────
+// Four highest-anxiety questions answered inline on the homepage,
+// in the order: privacy → data → effort → audience. Defusing the
+// objections that would otherwise cause a new visitor to bounce
+// before they hit the waitlist CTA. Full FAQ remains at /faq.
+function HomeFAQ() {
+  const isMobile = useIsMobile();
+  const [openIdx, setOpenIdx] = useState(null);
+  const items = [
+    {
+      q: 'What does my Coach actually see?',
+      a: 'Your Wellness Score and the signal summaries behind it — sleep quality, stress, social signals. Never your raw location, messages, or sleep details. Only what you choose to share.',
+    },
+    {
+      q: 'Where is my data stored?',
+      a: 'Biometric analysis runs on your iPhone. The Coach-relevant signals you choose to share sync to a secured, encrypted database — and only you can decide what flows out of your phone.',
+    },
+    {
+      q: 'Do I have to journal, check in, or log moods every day?',
+      a: 'No. BioTrax works passively in the background — that\'s the whole point. Check-ins are completely optional, available if you and your Coach want them, but never required.',
+    },
+    {
+      q: 'Who is BioTrax for?',
+      a: 'Anyone tracking their mental health — whether you\'re recovering, supporting someone you love, or just want a quiet system watching your back. No diagnosis required.',
+    },
+  ];
+  return (
+    <section
+      aria-label="Frequently asked questions"
+      style={{
+        padding: isMobile ? '64px 20px' : '110px 48px',
+        borderTop: `1px solid ${C.border}`,
+        background: C.bg,
+      }}
+    >
+      <div style={{ maxWidth: 920, margin: '0 auto' }}>
+        <div style={{
+          fontFamily: fontMono,
+          fontSize: 11,
+          color: C.green,
+          letterSpacing: 1.2,
+          fontWeight: 600,
+          marginBottom: 16,
+        }}>
+          BEFORE YOU JOIN
+        </div>
+        <h2 style={{
+          margin: 0,
+          fontFamily: fontDisplay,
+          fontSize: isMobile ? 32 : 44,
+          fontWeight: 400,
+          lineHeight: 1.1,
+          letterSpacing: -0.5,
+          color: C.ink,
+          marginBottom: isMobile ? 32 : 48,
+        }}>
+          The questions <em style={{ fontStyle: 'italic', color: C.green, fontWeight: 400 }}>everyone asks first.</em>
+        </h2>
+
+        <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${C.border}` }}>
+          {items.map((item, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
+                <button
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: isMobile ? '20px 0' : '24px 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 24,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: fontBody,
+                    fontSize: isMobile ? 16.5 : 18.5,
+                    fontWeight: 500,
+                    color: C.ink,
+                    letterSpacing: -0.2,
+                  }}
+                >
+                  <span>{item.q}</span>
+                  <span
+                    aria-hidden
+                    style={{
+                      fontFamily: fontMono,
+                      fontSize: 22,
+                      color: isOpen ? C.green : C.inkMuted,
+                      transition: 'transform 0.25s ease, color 0.2s',
+                      transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                      lineHeight: 1,
+                      flexShrink: 0,
+                    }}
+                  >
+                    +
+                  </span>
+                </button>
+                <div
+                  style={{
+                    maxHeight: isOpen ? 320 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease',
+                  }}
+                >
+                  <p style={{
+                    margin: 0,
+                    paddingBottom: isOpen ? (isMobile ? 20 : 28) : 0,
+                    fontFamily: fontBody,
+                    fontSize: isMobile ? 15 : 16.5,
+                    lineHeight: 1.7,
+                    color: C.inkDim,
+                    maxWidth: 680,
+                  }}>
+                    {item.a}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ marginTop: 32, fontFamily: fontMono, fontSize: 12, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>
+          <Link to="/faq" style={{ color: C.inkMuted, textDecoration: 'none', borderBottom: `1px solid ${C.border}` }}>
+            See all questions →
+          </Link>
         </div>
       </div>
     </section>
@@ -1352,6 +1565,7 @@ function Home() {
   return (
     <>
       <Hero headline={headline} />
+      <TrustStrip />
       <Tracks />
       <HowItWorks />
       <StressSection />
@@ -1360,6 +1574,7 @@ function Home() {
       <Caregivers />
       <ScorePlayground />
       <Privacy />
+      <HomeFAQ />
       <Waitlist />
     </>
   );
