@@ -449,146 +449,6 @@ function Nav() {
   );
 }
 
-// ─────────────────────────── Apple Watch (Hero prop) ───────────────────────────
-// Small CSS-rendered Apple Watch shown next to the iPhone in the hero.
-// Purpose: instantly communicate "iPhone + Apple Watch" without adding
-// a real product photo asset. The face shows a faux check-in alert,
-// reinforcing one of the existing features (gentle daily check-ins).
-//
-// Positioned absolutely so it sits at the bottom-right of the phone,
-// slightly overlapping the phone's bottom edge — reads as "next to"
-// the phone, like both devices are on the same desk.
-//
-// On mobile, scaled down and tucked closer to keep the hero compact.
-function AppleWatchCheckin({ isMobile }) {
-  const size = isMobile ? 116 : 168;
-  const offsetRight = isMobile ? -28 : -64;
-  const offsetBottom = isMobile ? -18 : -32;
-  return (
-    <div
-      aria-hidden
-      style={{
-        position: 'absolute',
-        right: offsetRight,
-        bottom: offsetBottom,
-        width: size,
-        height: size * 1.18, // Apple Watch is slightly taller than wide
-        pointerEvents: 'none',
-        zIndex: 3,
-      }}
-    >
-      {/* Watch case — outer squircle in deep grey with subtle gradient */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        borderRadius: size * 0.32,
-        background: 'linear-gradient(160deg, #2b2f33 0%, #1a1d20 50%, #0f1112 100%)',
-        boxShadow: `0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)`,
-      }} />
-
-      {/* Digital crown — small nub on the right edge */}
-      <div style={{
-        position: 'absolute',
-        right: -4,
-        top: '32%',
-        width: 6,
-        height: size * 0.12,
-        borderRadius: 2,
-        background: 'linear-gradient(90deg, #3a3e42, #5a5e62)',
-        boxShadow: '-1px 0 2px rgba(0,0,0,0.4)',
-      }} />
-
-      {/* Side button — smaller, below crown */}
-      <div style={{
-        position: 'absolute',
-        right: -3,
-        top: '54%',
-        width: 5,
-        height: size * 0.08,
-        borderRadius: 2,
-        background: 'linear-gradient(90deg, #3a3e42, #4a4e52)',
-      }} />
-
-      {/* Watch face — inner screen with check-in notification */}
-      <div style={{
-        position: 'absolute',
-        top: '8%', left: '8%', right: '8%', bottom: '8%',
-        borderRadius: size * 0.26,
-        background: '#000',
-        overflow: 'hidden',
-        padding: size * 0.07,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}>
-        {/* Top: BioTrax tag + time */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{
-            fontFamily: fontMono,
-            fontSize: size * 0.055,
-            color: C.green,
-            letterSpacing: 0.5,
-            fontWeight: 600,
-          }}>
-            BIOTRAX
-          </div>
-          <div style={{
-            fontFamily: fontBody,
-            fontSize: size * 0.055,
-            color: 'rgba(255,255,255,0.55)',
-            fontWeight: 500,
-          }}>
-            9:41
-          </div>
-        </div>
-
-        {/* Middle: check-in question */}
-        <div style={{
-          fontFamily: fontBody,
-          fontSize: size * 0.08,
-          color: '#fff',
-          lineHeight: 1.15,
-          fontWeight: 500,
-          letterSpacing: -0.2,
-        }}>
-          How are you<br />doing today?
-        </div>
-
-        {/* Bottom: two response buttons */}
-        <div style={{ display: 'flex', gap: size * 0.04 }}>
-          <div style={{
-            flex: 1,
-            background: C.green,
-            color: '#04201a',
-            borderRadius: size * 0.08,
-            padding: `${size * 0.04}px 0`,
-            textAlign: 'center',
-            fontFamily: fontBody,
-            fontSize: size * 0.062,
-            fontWeight: 700,
-          }}>
-            Good
-          </div>
-          <div style={{
-            flex: 1,
-            background: 'rgba(255,255,255,0.1)',
-            color: '#fff',
-            borderRadius: size * 0.08,
-            padding: `${size * 0.04}px 0`,
-            textAlign: 'center',
-            fontFamily: fontBody,
-            fontSize: size * 0.062,
-            fontWeight: 600,
-            border: '1px solid rgba(255,255,255,0.15)',
-          }}>
-            Not great
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─────────────────────────── Hero ───────────────────────────
 function Hero({ headline }) {
   const isMobile = useIsMobile();
@@ -681,9 +541,8 @@ function Hero({ headline }) {
           </div>
         </div>
 
-        <div style={{ order: isMobile ? 1 : 2, display: 'flex', justifyContent: 'center', position: 'relative' }}>
+        <div style={{ order: isMobile ? 1 : 2, display: 'flex', justifyContent: 'center' }}>
           <TiltPhone src="/assets/home.png" width={isMobile ? 240 : 360} alt="BioTrax Baseline Score home screen" />
-          <AppleWatchCheckin isMobile={isMobile} />
         </div>
       </div>
     </section>
