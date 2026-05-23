@@ -1144,15 +1144,26 @@ function StoryBridge({ children }) {
       }}>
         {words.map((word, i) => {
           // Cap delay at 600ms so a 10-word phrase still feels lively.
-          const delay = Math.min(i * 80, 600);
+          // Delay capped so even long phrases finish within ~2s.
+          // 120ms stagger gives enough gap between words that the eye
+          // catches each one individually rather than seeing a smear.
+          const delay = Math.min(i * 120, 900);
           return (
             <span
               key={i}
               style={{
                 display: 'inline-block',
+                // Color shifts from 'ghost' (inkMuted, very dim) to
+                // 'present' (inkDim, the brand muted color). The
+                // contrast change is what makes the animation
+                // perceptible — pure opacity 0→1 against a dark
+                // background is hard for the eye to catch.
+                color: visible ? C.inkDim : C.inkMuted,
                 opacity: visible ? 1 : 0,
-                transform: visible ? 'translateY(0)' : 'translateY(12px)',
-                transition: `opacity 600ms cubic-bezier(.2,.7,.3,1) ${delay}ms, transform 600ms cubic-bezier(.2,.7,.3,1) ${delay}ms`,
+                // 24px slide is large enough to actually see, small
+                // enough to still feel calm rather than swooping.
+                transform: visible ? 'translateY(0)' : 'translateY(24px)',
+                transition: `opacity 900ms cubic-bezier(.2,.7,.3,1) ${delay}ms, transform 900ms cubic-bezier(.2,.7,.3,1) ${delay}ms, color 900ms cubic-bezier(.2,.7,.3,1) ${delay}ms`,
                 whiteSpace: 'pre',
               }}
             >
