@@ -12,49 +12,50 @@ const C = {
 const fontDisplay = '"Cormorant Garamond", "Times New Roman", Georgia, serif';
 const fontBody = '"Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
 
-// Placeholder Q&A — these are scaffold answers chosen to cover topics
-// real visitors actually wonder about. Replace each `a:` with real
-// content as it becomes ready.
+// Frequently asked questions, ordered roughly by what new visitors
+// wonder first: what it is → how it differs → what you need → when can
+// you get it → how it handles your data → who else sees it → does it
+// affect device life → is it medical → cost → support.
 const QUESTIONS = [
   {
     q: 'What is BioTrax, in one sentence?',
-    a: '[Placeholder] BioTrax is a passive nervous-system monitor for iPhone and Apple Watch — it watches your sleep, stress, social patterns and home-stay continuously, and quietly alerts a Trusted Contact only if your Baseline Score drops below a threshold you set.',
+    a: 'BioTrax is a passive nervous-system monitor for iPhone and Apple Watch — it watches your sleep, stress, social patterns and home-stay continuously, and quietly alerts a Trusted Contact only if your Baseline Score drops below a threshold you set.',
   },
   {
     q: 'How is this different from Whoop, Oura, or Apple Health?',
-    a: '[Placeholder] Those tools optimise for athletic performance and surface raw data for you to interpret. BioTrax is built around mental-health early-warning specifically, fuses signals into a single Baseline Score, and adds the Trusted Contact safety net — none of which the others offer.',
+    a: 'Those tools optimise for athletic performance and surface raw data for you to interpret. BioTrax is built around mental-health early-warning specifically, fuses signals into a single Baseline Score, and adds the Trusted Contact safety net — none of which the others offer.',
   },
   {
     q: 'Do I need an Apple Watch?',
-    a: '[Placeholder] Yes — heart rate variability is the foundation of the Baseline Score, and HRV requires a Watch. iPhone alone won&apos;t work. Apple Watch Series 4 or later is supported.',
+    a: 'Yes — heart rate variability is the foundation of the Baseline Score, and HRV requires a Watch. iPhone alone won&apos;t work. Most modern Apple Watch models are supported; check the App Store listing for the current minimum.',
   },
   {
     q: 'When does the beta open?',
-    a: '[Placeholder] We&apos;re currently in TestFlight closed beta and plan to open public access within the next month. Joining the waitlist is the best way to be in the first cohort of users when it does.',
+    a: 'We&apos;re in TestFlight closed beta now. Join the waitlist and we&apos;ll write to you when public access opens — waitlist members will be the first cohort in.',
   },
   {
     q: 'How does my data stay private?',
-    a: '[Placeholder] Health and location data are processed entirely on your device — they never reach our servers. The only data we receive is your waitlist email. When you choose to share with a Trusted Contact, only a small encrypted summary payload is sent. Read the full Privacy Policy for the complete picture.',
+    a: 'Health and location data are processed entirely on your device — they never reach our servers. The only data we receive is your waitlist email. When you choose to share with a Trusted Contact, only a small encrypted summary payload is sent. Read the full Privacy Policy for the complete picture.',
   },
   {
     q: 'What is a Trusted Contact, and what can they see?',
-    a: '[Placeholder] A Trusted Contact is one person you choose to invite — a partner, friend, sibling, clinician — who installs BioTrax with a Companion profile. They see a calm overview of your status (Baseline Score, category trends), never raw biometrics. You control what each signal shares, and you can pause or revoke them anytime.',
+    a: 'A Trusted Contact is one person you choose to invite — a partner, friend, sibling, clinician — who installs BioTrax with a Companion profile. They see a calm overview of your status (Baseline Score, category trends), never raw biometrics. You control what each signal shares, and you can pause or revoke them anytime.',
   },
   {
     q: 'Will it drain my battery?',
-    a: '[Placeholder] No. BioTrax uses passive Apple Watch sensors that are already running, and the iOS app processes data in efficient short bursts using Apple&apos;s recommended background-task and significant-location-change APIs. Typical impact is under 2% of daily battery life.',
+    a: 'No. BioTrax uses passive Apple Watch sensors that are already running, and the iOS app processes data in efficient short bursts using Apple&apos;s recommended background-task and significant-location-change APIs. The battery impact is minimal — typically negligible in daily use.',
   },
   {
     q: 'Is this a medical device? Can it diagnose depression?',
-    a: '[Placeholder] No. BioTrax is a wellness tool, not a medical device. It does not diagnose, treat, or cure any condition. It surfaces patterns that — based on peer-reviewed research — often precede depressive episodes, and it gives you and a trusted person an early signal. It is not a substitute for professional mental-health care.',
+    a: 'No. BioTrax is a wellness tool, not a medical device. It does not diagnose, treat, or cure any condition. It surfaces behavioural patterns that may signal changes in mental wellbeing, and it gives you and a trusted person an early signal. It is not a substitute for professional mental-health care.',
   },
   {
     q: 'How much will it cost?',
-    a: '[Placeholder] Free during beta. We&apos;ll write to you with pricing well before any billing begins, and we&apos;re committed to making the safety-net features available regardless of price tier.',
+    a: 'Pricing details will be shared closer to public launch. We&apos;ll write to waitlist members well before any billing begins, and we&apos;re committed to keeping the core safety-net features accessible.',
   },
   {
     q: 'I have feedback or a bug report. How do I reach you?',
-    a: '[Placeholder] We read every message. Use the support form on our Support page, or write to support@biotrax.se directly.',
+    a: 'We read every message. Use the support form on our Support page, or write to support@biotrax.se directly.',
   },
 ];
 
