@@ -1073,6 +1073,63 @@ function ScorePlayground() {
   );
 }
 
+// ─────────────────────────── Story Bridge ───────────────────────────
+// A quiet narrative beat that sits between major sections. Two thin green
+// hairlines top and bottom, with a single Cormorant italic phrase centred
+// between them. Keeps the page rhythm — never long enough to feel like a
+// section, just enough to confirm the emotional direction of the scroll.
+//
+// Honours prefers-reduced-motion (hairline animations skipped via the
+// existing CSS rules; the bridge itself is static so no extra handling
+// needed here).
+function StoryBridge({ children }) {
+  const isMobile = useIsMobile();
+  return (
+    <section
+      aria-hidden="true"
+      style={{
+        padding: isMobile ? '40px 20px' : '64px 48px',
+        background: C.bg,
+      }}
+    >
+      <div style={{
+        maxWidth: 640,
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: isMobile ? 18 : 24,
+      }}>
+        <div style={{
+          width: 32,
+          height: 1,
+          background: `linear-gradient(90deg, transparent, ${C.green}, transparent)`,
+          opacity: 0.5,
+        }} />
+        <p style={{
+          margin: 0,
+          fontFamily: fontDisplay,
+          fontStyle: 'italic',
+          fontSize: isMobile ? 20 : 24,
+          fontWeight: 400,
+          color: C.inkDim,
+          textAlign: 'center',
+          letterSpacing: -0.2,
+          lineHeight: 1.35,
+        }}>
+          {children}
+        </p>
+        <div style={{
+          width: 32,
+          height: 1,
+          background: `linear-gradient(90deg, transparent, ${C.green}, transparent)`,
+          opacity: 0.5,
+        }} />
+      </div>
+    </section>
+  );
+}
+
 // ─────────────────────────── Trust Strip ───────────────────────────
 // Founder credentials shown right after the hero. Two parallel lines —
 // the clinical pedigree (Dr. Reid) and the security pedigree (Michael).
@@ -1578,15 +1635,20 @@ function Home() {
     <>
       <Hero headline={headline} />
       <TrustStrip />
+      <StoryBridge>You don\'t see it coming.</StoryBridge>
       <Tracks />
+      <StoryBridge>But your body does.</StoryBridge>
       <HowItWorks />
-      <StressSection />
-      <CoachSection />
-      <WeeklyReport />
-      <Caregivers />
+      <StoryBridge>See it for yourself.</StoryBridge>
       <ScorePlayground />
+      <StressSection />
+      <StoryBridge>And someone in your corner gets the signal first.</StoryBridge>
+      <CoachSection />
+      <Caregivers />
+      <WeeklyReport />
       <Privacy />
       <HomeFAQ />
+      <StoryBridge>Reclaim your life.</StoryBridge>
       <Waitlist />
     </>
   );
