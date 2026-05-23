@@ -492,6 +492,18 @@ function Hero({ headline }) {
             ))}
           </h1>
           <p style={{
+            margin: 0,
+            fontFamily: fontBody,
+            fontSize: isMobile ? 17 : 21,
+            lineHeight: 1.4,
+            color: C.ink,
+            maxWidth: 520,
+            fontWeight: 500,
+            letterSpacing: -0.2,
+          }}>
+            An invisible mental health early-warning system for <span style={{ color: C.green }}>iPhone</span> and <span style={{ color: C.green }}>Apple Watch</span>.
+          </p>
+          <p style={{
             margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 17, lineHeight: 1.55,
             color: C.inkDim, maxWidth: 480, fontWeight: 400,
           }}>
@@ -1061,6 +1073,207 @@ function ScorePlayground() {
   );
 }
 
+// ─────────────────────────── Story Bridge ───────────────────────────
+// A quiet narrative beat between major sections. No hairlines — just
+// the phrase itself, fading up word-by-word as it scrolls into view.
+// Each word delayed 80ms after the previous (capped at 600ms total)
+// so even longer phrases settle in well under 1.5s.
+//
+// Triggers exactly once via IntersectionObserver at 40% visibility,
+// so the animation feels deliberate rather than re-firing on scroll
+// back up. Honours prefers-reduced-motion: those users see the final
+// state immediately, no fade or slide.
+function StoryBridge({ children }) {
+  const isMobile = useIsMobile();
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    // Respect prefers-reduced-motion: skip the animation entirely.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.unobserve(node); // one-shot — don't re-fire on scroll up
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Split the phrase into words so each can fade up independently.
+  // Only handles string children — keep bridge phrases as plain text.
+  const text = typeof children === 'string' ? children : String(children);
+  const words = text.split(' ');
+
+  return (
+    <section
+      ref={ref}
+      aria-hidden="true"
+      style={{
+        padding: isMobile ? '64px 20px' : '96px 48px',
+        background: C.bg,
+      }}
+    >
+      <p style={{
+        margin: 0,
+        maxWidth: 720,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontFamily: fontDisplay,
+        fontStyle: 'italic',
+        fontSize: isMobile ? 24 : 32,
+        fontWeight: 400,
+        color: C.inkDim,
+        textAlign: 'center',
+        letterSpacing: -0.3,
+        lineHeight: 1.35,
+      }}>
+        {words.map((word, i) => {
+          // Cap delay at 600ms so a 10-word phrase still feels lively.
+          // Delay capped so even long phrases finish within ~2s.
+          // 120ms stagger gives enough gap between words that the eye
+          // catches each one individually rather than seeing a smear.
+          const delay = Math.min(i * 120, 900);
+          return (
+            <span
+              key={i}
+              style={{
+                display: 'inline-block',
+                // Color shifts from 'ghost' (inkMuted, very dim) to
+                // 'present' (inkDim, the brand muted color). The
+                // contrast change is what makes the animation
+                // perceptible — pure opacity 0→1 against a dark
+                // background is hard for the eye to catch.
+                color: visible ? C.inkDim : C.inkMuted,
+                opacity: visible ? 1 : 0,
+                // 24px slide is large enough to actually see, small
+                // enough to still feel calm rather than swooping.
+                transform: visible ? 'translateY(0)' : 'translateY(24px)',
+                transition: `opacity 900ms cubic-bezier(.2,.7,.3,1) ${delay}ms, transform 900ms cubic-bezier(.2,.7,.3,1) ${delay}ms, color 900ms cubic-bezier(.2,.7,.3,1) ${delay}ms`,
+                whiteSpace: 'pre',
+              }}
+            >
+              {word}{i < words.length - 1 ? ' ' : ''}
+            </span>
+          );
+        })}
+      </p>
+    </section>
+  );
+}
+
+// ─────────────────────────── Trust Strip ───────────────────────────
+// Compact founder credentials shown right after the hero. Designed
+// to read at a glance: kicker label is INLINE with its body text
+// (not stacked), and the two credentials sit side-by-side with a
+// thin divider between them. The "full story" link is a tiny inline
+// anchor at the right edge.
+//
+// Vertical footprint: ~80px desktop, ~120px mobile (vs. ~200px previously).
+function TrustStrip() {
+  const isMobile = useIsMobile();
+  const rows = [
+    {
+      kicker: 'CLINICAL',
+      body: (
+        <>Built on 20+ years of clinical biofeedback research from <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', color: C.green, fontWeight: 500 }}>Dr. Reid, PhD</em></>
+      ),
+    },
+    {
+      kicker: 'SECURITY',
+      body: (
+        <>Engineered by <em style={{ fontFamily: fontDisplay, fontStyle: 'italic', color: C.green, fontWeight: 500 }}>Michael Reid</em> — 20+ years architecting secure enterprise systems</>
+      ),
+    },
+  ];
+  return (
+    <section
+      aria-label="Founder credentials"
+      style={{
+        padding: isMobile ? '20px' : '22px 48px',
+        borderTop: `1px solid ${C.border}`,
+        borderBottom: `1px solid ${C.border}`,
+        background: C.bgAlt,
+      }}
+    >
+      <div style={{
+        maxWidth: 1280,
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: 'space-between',
+        gap: isMobile ? 14 : 32,
+        flexWrap: 'wrap',
+      }}>
+        {rows.map((r, i) => (
+          <div
+            key={r.kicker}
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: 12,
+              flex: isMobile ? 'none' : 1,
+              borderLeft: !isMobile && i > 0 ? `1px solid ${C.border}` : 'none',
+              paddingLeft: !isMobile && i > 0 ? 32 : 0,
+              minWidth: 0,
+            }}
+          >
+            <span style={{
+              fontFamily: fontMono,
+              fontSize: 10.5,
+              color: C.green,
+              letterSpacing: 1.2,
+              fontWeight: 600,
+              flexShrink: 0,
+            }}>
+              {r.kicker}
+            </span>
+            <span style={{
+              fontFamily: fontBody,
+              fontSize: isMobile ? 13.5 : 14.5,
+              lineHeight: 1.5,
+              color: C.inkDim,
+            }}>
+              {r.body}
+            </span>
+          </div>
+        ))}
+        <Link
+          to="/about"
+          style={{
+            fontFamily: fontMono,
+            fontSize: 10.5,
+            color: C.inkMuted,
+            letterSpacing: 0.8,
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            borderBottom: `1px solid ${C.border}`,
+            flexShrink: 0,
+            paddingBottom: 1,
+          }}
+        >
+          Read the full story →
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 // ─────────────────────────── Privacy Strip ───────────────────────────
 function Privacy() {
   const isMobile = useIsMobile();
@@ -1076,6 +1289,141 @@ function Privacy() {
               <div style={{ fontFamily: fontMono, fontSize: 11, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>{t}</div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────── Home FAQ ───────────────────────────
+// Four highest-anxiety questions answered inline on the homepage,
+// in the order: privacy → data → effort → audience. Defusing the
+// objections that would otherwise cause a new visitor to bounce
+// before they hit the waitlist CTA. Full FAQ remains at /faq.
+function HomeFAQ() {
+  const isMobile = useIsMobile();
+  const [openIdx, setOpenIdx] = useState(null);
+  const items = [
+    {
+      q: 'What does my Coach actually see?',
+      a: 'Your Wellness Score and the signal summaries behind it — sleep quality, stress, social signals. Never your raw location, messages, or sleep details. Only what you choose to share.',
+    },
+    {
+      q: 'Where is my data stored?',
+      a: 'Biometric analysis runs on your iPhone. The Coach-relevant signals you choose to share sync to a secured, encrypted database — and only you can decide what flows out of your phone.',
+    },
+    {
+      q: 'Do I have to journal, check in, or log moods every day?',
+      a: 'No. BioTrax works passively in the background — that\'s the whole point. Check-ins are completely optional, available if you and your Coach want them, but never required.',
+    },
+    {
+      q: 'Who is BioTrax for?',
+      a: 'Anyone tracking their mental health — whether you\'re recovering, supporting someone you love, or just want a quiet system watching your back. No diagnosis required.',
+    },
+  ];
+  return (
+    <section
+      aria-label="Frequently asked questions"
+      style={{
+        padding: isMobile ? '64px 20px' : '110px 48px',
+        borderTop: `1px solid ${C.border}`,
+        background: C.bg,
+      }}
+    >
+      <div style={{ maxWidth: 920, margin: '0 auto' }}>
+        <div style={{
+          fontFamily: fontMono,
+          fontSize: 11,
+          color: C.green,
+          letterSpacing: 1.2,
+          fontWeight: 600,
+          marginBottom: 16,
+        }}>
+          BEFORE YOU JOIN
+        </div>
+        <h2 style={{
+          margin: 0,
+          fontFamily: fontDisplay,
+          fontSize: isMobile ? 32 : 44,
+          fontWeight: 400,
+          lineHeight: 1.1,
+          letterSpacing: -0.5,
+          color: C.ink,
+          marginBottom: isMobile ? 32 : 48,
+        }}>
+          The questions <em style={{ fontStyle: 'italic', color: C.green, fontWeight: 400 }}>everyone asks first.</em>
+        </h2>
+
+        <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${C.border}` }}>
+          {items.map((item, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
+                <button
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: isMobile ? '20px 0' : '24px 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 24,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: fontBody,
+                    fontSize: isMobile ? 16.5 : 18.5,
+                    fontWeight: 500,
+                    color: C.ink,
+                    letterSpacing: -0.2,
+                  }}
+                >
+                  <span>{item.q}</span>
+                  <span
+                    aria-hidden
+                    style={{
+                      fontFamily: fontMono,
+                      fontSize: 22,
+                      color: isOpen ? C.green : C.inkMuted,
+                      transition: 'transform 0.25s ease, color 0.2s',
+                      transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                      lineHeight: 1,
+                      flexShrink: 0,
+                    }}
+                  >
+                    +
+                  </span>
+                </button>
+                <div
+                  style={{
+                    maxHeight: isOpen ? 320 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease',
+                  }}
+                >
+                  <p style={{
+                    margin: 0,
+                    paddingBottom: isOpen ? (isMobile ? 20 : 28) : 0,
+                    fontFamily: fontBody,
+                    fontSize: isMobile ? 15 : 16.5,
+                    lineHeight: 1.7,
+                    color: C.inkDim,
+                    maxWidth: 680,
+                  }}>
+                    {item.a}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ marginTop: 32, fontFamily: fontMono, fontSize: 12, color: C.inkMuted, letterSpacing: 0.8, textTransform: 'uppercase' }}>
+          <Link to="/faq" style={{ color: C.inkMuted, textDecoration: 'none', borderBottom: `1px solid ${C.border}` }}>
+            See all questions →
+          </Link>
         </div>
       </div>
     </section>
@@ -1352,14 +1700,21 @@ function Home() {
   return (
     <>
       <Hero headline={headline} />
+      <TrustStrip />
+      <StoryBridge>You don&rsquo;t see it coming.</StoryBridge>
       <Tracks />
+      <StoryBridge>But your body does.</StoryBridge>
       <HowItWorks />
-      <StressSection />
-      <CoachSection />
-      <WeeklyReport />
-      <Caregivers />
+      <StoryBridge>See it for yourself.</StoryBridge>
       <ScorePlayground />
+      <StressSection />
+      <StoryBridge>And someone in your corner gets the signal first.</StoryBridge>
+      <CoachSection />
+      <Caregivers />
+      <WeeklyReport />
       <Privacy />
+      <HomeFAQ />
+      <StoryBridge>Reclaim your life.</StoryBridge>
       <Waitlist />
     </>
   );
