@@ -1074,67 +1074,105 @@ function ScorePlayground() {
 }
 
 // ─────────────────────────── Story Bridge ───────────────────────────
-// A quiet narrative beat that sits between major sections. Two thin green
-// hairlines top and bottom, with a single Cormorant italic phrase centred
-// between them. Keeps the page rhythm — never long enough to feel like a
-// section, just enough to confirm the emotional direction of the scroll.
+// A quiet narrative beat between major sections. No hairlines — just
+// the phrase itself, fading up word-by-word as it scrolls into view.
+// Each word delayed 80ms after the previous (capped at 600ms total)
+// so even longer phrases settle in well under 1.5s.
 //
-// Honours prefers-reduced-motion (hairline animations skipped via the
-// existing CSS rules; the bridge itself is static so no extra handling
-// needed here).
+// Triggers exactly once via IntersectionObserver at 40% visibility,
+// so the animation feels deliberate rather than re-firing on scroll
+// back up. Honours prefers-reduced-motion: those users see the final
+// state immediately, no fade or slide.
 function StoryBridge({ children }) {
   const isMobile = useIsMobile();
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    // Respect prefers-reduced-motion: skip the animation entirely.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.unobserve(node); // one-shot — don't re-fire on scroll up
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Split the phrase into words so each can fade up independently.
+  // Only handles string children — keep bridge phrases as plain text.
+  const text = typeof children === 'string' ? children : String(children);
+  const words = text.split(' ');
+
   return (
     <section
+      ref={ref}
       aria-hidden="true"
       style={{
-        padding: isMobile ? '40px 20px' : '64px 48px',
+        padding: isMobile ? '64px 20px' : '96px 48px',
         background: C.bg,
       }}
     >
-      <div style={{
-        maxWidth: 640,
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: isMobile ? 18 : 24,
+      <p style={{
+        margin: 0,
+        maxWidth: 720,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontFamily: fontDisplay,
+        fontStyle: 'italic',
+        fontSize: isMobile ? 24 : 32,
+        fontWeight: 400,
+        color: C.inkDim,
+        textAlign: 'center',
+        letterSpacing: -0.3,
+        lineHeight: 1.35,
       }}>
-        <div style={{
-          width: 32,
-          height: 1,
-          background: `linear-gradient(90deg, transparent, ${C.green}, transparent)`,
-          opacity: 0.5,
-        }} />
-        <p style={{
-          margin: 0,
-          fontFamily: fontDisplay,
-          fontStyle: 'italic',
-          fontSize: isMobile ? 20 : 24,
-          fontWeight: 400,
-          color: C.inkDim,
-          textAlign: 'center',
-          letterSpacing: -0.2,
-          lineHeight: 1.35,
-        }}>
-          {children}
-        </p>
-        <div style={{
-          width: 32,
-          height: 1,
-          background: `linear-gradient(90deg, transparent, ${C.green}, transparent)`,
-          opacity: 0.5,
-        }} />
-      </div>
+        {words.map((word, i) => {
+          // Cap delay at 600ms so a 10-word phrase still feels lively.
+          const delay = Math.min(i * 80, 600);
+          return (
+            <span
+              key={i}
+              style={{
+                display: 'inline-block',
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateY(0)' : 'translateY(12px)',
+                transition: `opacity 600ms cubic-bezier(.2,.7,.3,1) ${delay}ms, transform 600ms cubic-bezier(.2,.7,.3,1) ${delay}ms`,
+                whiteSpace: 'pre',
+              }}
+            >
+              {word}{i < words.length - 1 ? ' ' : ''}
+            </span>
+          );
+        })}
+      </p>
     </section>
   );
 }
 
 // ─────────────────────────── Trust Strip ───────────────────────────
-// Founder credentials shown right after the hero. Two parallel lines —
-// the clinical pedigree (Dr. Reid) and the security pedigree (Michael).
-// Together they answer the trust questions a new visitor doesn't ask
-// out loud: "Who built this?" and "Can I trust them with my data?"
+// Compact founder credentials shown right after the hero. Designed
+// to read at a glance: kicker label is INLINE with its body text
+// (not stacked), and the two credentials sit side-by-side with a
+// thin divider between them. The "full story" link is a tiny inline
+// anchor at the right edge.
+//
+// Vertical footprint: ~80px desktop, ~120px mobile (vs. ~200px previously).
 function TrustStrip() {
   const isMobile = useIsMobile();
   const rows = [
@@ -1155,7 +1193,7 @@ function TrustStrip() {
     <section
       aria-label="Founder credentials"
       style={{
-        padding: isMobile ? '32px 20px' : '40px 48px',
+        padding: isMobile ? '20px' : '22px 48px',
         borderTop: `1px solid ${C.border}`,
         borderBottom: `1px solid ${C.border}`,
         background: C.bgAlt,
@@ -1164,45 +1202,62 @@ function TrustStrip() {
       <div style={{
         maxWidth: 1280,
         margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-        gap: isMobile ? 20 : 64,
-        alignItems: 'start',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: 'space-between',
+        gap: isMobile ? 14 : 32,
+        flexWrap: 'wrap',
       }}>
-        {rows.map((r) => (
-          <div key={r.kicker} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{
+        {rows.map((r, i) => (
+          <div
+            key={r.kicker}
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: 12,
+              flex: isMobile ? 'none' : 1,
+              borderLeft: !isMobile && i > 0 ? `1px solid ${C.border}` : 'none',
+              paddingLeft: !isMobile && i > 0 ? 32 : 0,
+              minWidth: 0,
+            }}
+          >
+            <span style={{
               fontFamily: fontMono,
-              fontSize: 11,
+              fontSize: 10.5,
               color: C.green,
               letterSpacing: 1.2,
               fontWeight: 600,
+              flexShrink: 0,
             }}>
               {r.kicker}
-            </div>
-            <div style={{
+            </span>
+            <span style={{
               fontFamily: fontBody,
-              fontSize: isMobile ? 15 : 16.5,
-              lineHeight: 1.55,
+              fontSize: isMobile ? 13.5 : 14.5,
+              lineHeight: 1.5,
               color: C.inkDim,
-              maxWidth: 560,
             }}>
               {r.body}
-            </div>
+            </span>
           </div>
         ))}
-        <div style={{
-          gridColumn: isMobile ? '1' : '1 / -1',
-          fontFamily: fontMono,
-          fontSize: 11,
-          color: C.inkMuted,
-          letterSpacing: 0.8,
-          textTransform: 'uppercase',
-        }}>
-          <Link to="/about" style={{ color: C.inkMuted, textDecoration: 'none', borderBottom: `1px solid ${C.border}` }}>
-            Read the full story →
-          </Link>
-        </div>
+        <Link
+          to="/about"
+          style={{
+            fontFamily: fontMono,
+            fontSize: 10.5,
+            color: C.inkMuted,
+            letterSpacing: 0.8,
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            borderBottom: `1px solid ${C.border}`,
+            flexShrink: 0,
+            paddingBottom: 1,
+          }}
+        >
+          Read the full story →
+        </Link>
       </div>
     </section>
   );
@@ -1635,7 +1690,7 @@ function Home() {
     <>
       <Hero headline={headline} />
       <TrustStrip />
-      <StoryBridge>You don\'t see it coming.</StoryBridge>
+      <StoryBridge>You don&rsquo;t see it coming.</StoryBridge>
       <Tracks />
       <StoryBridge>But your body does.</StoryBridge>
       <HowItWorks />
