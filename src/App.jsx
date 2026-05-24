@@ -1582,7 +1582,7 @@ function Footer() {
   ];
   const socials = [
     { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/biotrax/about/?viewAsMember=true', icon: 'linkedin' },
-    { label: 'Instagram', href: 'https://www.instagram.com/biotrax_coach/',                          icon: 'instagram' },
+    { label: 'Instagram', href: 'https://www.instagram.com/biotrax_sense/',                          icon: 'instagram' },
     { label: 'Facebook',  href: 'https://www.facebook.com/BiotraxApp/',                              icon: 'facebook' },
   ];
   return (
