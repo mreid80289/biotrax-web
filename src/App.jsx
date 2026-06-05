@@ -56,7 +56,7 @@ function useIsWide(breakpoint = 1150) {
 
 // ─────────────────────────── iPhone frame ───────────────────────────
 function IPhone({ src, width = 280, alt, style = {}, shadow = true, tilt = 0, innerStyle = {}, imgStyle = {}, eager = false }) {
-  const aspect = 2796 / 1290;
+  const aspect = 2532 / 1170; // matches actual screenshot dimensions (iPhone 13)
   const height = width * aspect;
   const radius = width * 0.135;
   const bezel = Math.max(4, width * 0.022);
@@ -94,8 +94,9 @@ function IPhone({ src, width = 280, alt, style = {}, shadow = true, tilt = 0, in
           fetchpriority={eager ? 'high' : undefined}
           style={{
             width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'top center',
+            objectFit: 'contain', objectPosition: 'top center',
             display: 'block',
+            imageRendering: 'auto',
             ...imgStyle,
           }}
         />
