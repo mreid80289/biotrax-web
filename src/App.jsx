@@ -549,10 +549,13 @@ function Hero({ headline }) {
   );
 }
 
-// ─────────────────────────── What It Tracks ───────────────────────────
+// ─────────────────────────── What It Tracks (Scrollytelling) ───────────────────────────
 function Tracks() {
   const isMobile = useIsMobile();
-  const isWide = useIsWide();
+  const [active, setActive] = useState(0);
+  const itemRefs = useRef([]);
+  const sectionRef = useRef(null);
+
   const items = [
     {
       kicker: '01 / SLEEP',
@@ -583,33 +586,143 @@ function Tracks() {
       accent: C.blue,
     },
   ];
+
+  // Scroll observer — updates active index as each text block crosses the viewport centre
+  useEffect(() => {
+    if (isMobile) return;
+    const observers = itemRefs.current.map((el, i) => {
+      if (!el) return null;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActive(i); },
+        { rootMargin: '-35% 0px -55% 0px', threshold: 0 }
+      );
+      obs.observe(el);
+      return obs;
+    });
+    return () => observers.forEach((o) => o && o.disconnect());
+  }, [isMobile]);
+
+  // ── Mobile: simple stacked cards (unchanged feel) ──
+  if (isMobile) {
+    return (
+      <section style={{ padding: '64px 20px', borderTop: `1px solid ${C.border}` }}>
+        <div style={{ maxWidth: 600, margin: '0 auto' }}>
+          <SectionHeader
+            kicker="WHAT IT WATCHES"
+            title={[{ t: 'Four quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
+            sub="Apple Watch and Screen Time API do the work in the background. You just live your day."
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 40 }}>
+            {items.map((it) => (
+              <div key={it.kicker} style={{
+                border: `1px solid ${C.border}`, borderRadius: 24,
+                background: C.bgAlt, padding: 24, display: 'flex', flexDirection: 'column', gap: 16,
+                position: 'relative', overflow: 'hidden',
+              }}>
+                <div style={{ position: 'absolute', top: -1, left: 24, width: 40, height: 2, background: it.accent }} />
+                <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1, fontWeight: 600 }}>{it.kicker}</div>
+                <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 24, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
+                <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, lineHeight: 1.55, color: C.inkDim }}>{it.body}</p>
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+                  <IPhone src={it.src} width={160} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── Desktop: sticky scrollytelling ──
   return (
-    <section style={{ padding: isMobile ? '64px 20px' : '120px 48px', borderTop: `1px solid ${C.border}` }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+    <section ref={sectionRef} style={{ padding: '120px 48px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <SectionHeader
           kicker="WHAT IT WATCHES"
           title={[{ t: 'Four quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
           sub="Apple Watch and Screen Time API do the work in the background. You just live your day."
         />
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: isMobile ? 16 : 18, marginTop: isMobile ? 40 : 72 }}>
-          {items.map((it) => (
-            <div key={it.kicker} style={{
-              border: `1px solid ${C.border}`, borderRadius: 24,
-              background: C.bgAlt, padding: 24, display: 'flex', flexDirection: 'column', gap: 16,
-              position: 'relative', overflow: 'hidden',
-            }}>
-              <div style={{
-                position: 'absolute', top: -1, left: 24, width: 40, height: 2,
-                background: it.accent,
-              }} />
-              <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1, fontWeight: 600 }}>{it.kicker}</div>
-              <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isWide ? 26 : 24, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
-              <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, lineHeight: 1.55, color: C.inkDim }}>{it.body}</p>
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8, paddingTop: 8 }}>
-                <IPhone src={it.src} width={isWide ? 200 : 170} />
+
+        <div style={{ display: 'flex', gap: 80, alignItems: 'flex-start', marginTop: 80 }}>
+
+          {/* Left: scrolling text blocks */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {items.map((it, i) => (
+              <div
+                key={it.kicker}
+                ref={(el) => (itemRefs.current[i] = el)}
+                onClick={() => setActive(i)}
+                style={{
+                  padding: '52px 0',
+                  borderBottom: i < items.length - 1 ? `1px solid ${C.border}` : 'none',
+                  paddingLeft: 24,
+                  position: 'relative',
+                  cursor: 'default',
+                  transition: 'opacity 0.4s ease',
+                  opacity: active === i ? 1 : 0.3,
+                }}
+              >
+                {/* Active left bar */}
+                <div style={{
+                  position: 'absolute',
+                  left: 0, top: 52, bottom: 52,
+                  width: 2,
+                  borderRadius: 1,
+                  background: it.accent,
+                  opacity: active === i ? 1 : 0,
+                  transition: 'opacity 0.4s ease',
+                }} />
+                <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1.5, fontWeight: 600, marginBottom: 14 }}>{it.kicker}</div>
+                <h3 style={{ margin: '0 0 14px', fontFamily: fontDisplay, fontSize: 34, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
+                <p style={{ margin: 0, fontFamily: fontBody, fontSize: 15, lineHeight: 1.7, color: C.inkDim, maxWidth: 420 }}>{it.body}</p>
               </div>
+            ))}
+          </div>
+
+          {/* Right: sticky phone */}
+          <div style={{
+            width: 280,
+            flexShrink: 0,
+            position: 'sticky',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            alignSelf: 'flex-start',
+            marginTop: '25vh',
+          }}>
+            <div style={{ position: 'relative' }}>
+              {items.map((it, i) => (
+                <div key={it.kicker} style={{
+                  position: i === 0 ? 'relative' : 'absolute',
+                  inset: 0,
+                  opacity: active === i ? 1 : 0,
+                  transition: 'opacity 0.55s ease',
+                  pointerEvents: active === i ? 'auto' : 'none',
+                }}>
+                  <IPhone src={it.src} width={280} eager={i === 0} />
+                </div>
+              ))}
             </div>
-          ))}
+
+            {/* Dot indicators */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 28 }}>
+              {items.map((it, i) => (
+                <div
+                  key={i}
+                  onClick={() => setActive(i)}
+                  style={{
+                    width: active === i ? 22 : 7,
+                    height: 7,
+                    borderRadius: 4,
+                    background: active === i ? it.accent : 'rgba(255,255,255,0.18)',
+                    transition: 'all 0.35s ease',
+                    cursor: 'pointer',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
