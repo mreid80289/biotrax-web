@@ -635,95 +635,109 @@ function Tracks() {
   }
 
   // ── Desktop: sticky scrollytelling ──
+  // Each text block is min 80vh tall so the phone stays locked in the
+  // viewport while the user scrolls through the full feature text.
   return (
-    <section ref={sectionRef} style={{ padding: '120px 48px', borderTop: `1px solid ${C.border}` }}>
+    <section ref={sectionRef} style={{ borderTop: `1px solid ${C.border}`, padding: '120px 48px 0' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <SectionHeader
           kicker="WHAT IT WATCHES"
           title={[{ t: 'Four quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
           sub="Apple Watch and Screen Time API do the work in the background. You just live your day."
         />
+      </div>
 
-        <div style={{ display: 'flex', gap: 80, alignItems: 'flex-start', marginTop: 80 }}>
+      <div style={{ maxWidth: 1200, margin: '80px auto 0', display: 'flex', gap: 80, alignItems: 'flex-start' }}>
 
-          {/* Left: scrolling text blocks */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* LEFT: tall scrolling text — each block fills ~80vh so phone stays locked */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {items.map((it, i) => (
+            <div
+              key={it.kicker}
+              ref={(el) => (itemRefs.current[i] = el)}
+              style={{
+                minHeight: '80vh',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                padding: '60px 0 60px 28px',
+                borderBottom: i < items.length - 1 ? `1px solid ${C.border}` : 'none',
+                position: 'relative',
+                transition: 'opacity 0.4s ease',
+                opacity: active === i ? 1 : 0.28,
+              }}
+            >
+              <div style={{
+                position: 'absolute',
+                left: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 2,
+                height: 80,
+                borderRadius: 1,
+                background: it.accent,
+                opacity: active === i ? 1 : 0,
+                transition: 'opacity 0.4s ease',
+              }} />
+              <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1.5, fontWeight: 600, marginBottom: 18 }}>
+                {it.kicker}
+              </div>
+              <h3 style={{ margin: '0 0 18px', fontFamily: fontDisplay, fontSize: 38, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>
+                {it.title}
+              </h3>
+              <p style={{ margin: 0, fontFamily: fontBody, fontSize: 16, lineHeight: 1.75, color: C.inkDim, maxWidth: 440 }}>
+                {it.body}
+              </p>
+            </div>
+          ))}
+          {/* Bottom padding so last item can scroll to centre before section ends */}
+          <div style={{ height: '30vh' }} />
+        </div>
+
+        {/* RIGHT: phone — sticky to viewport centre */}
+        <div style={{
+          width: 300,
+          flexShrink: 0,
+          position: 'sticky',
+          top: 'calc(50vh - 320px)',
+          alignSelf: 'flex-start',
+        }}>
+          <div style={{ position: 'relative', width: 300, height: 640 }}>
             {items.map((it, i) => (
               <div
                 key={it.kicker}
-                ref={(el) => (itemRefs.current[i] = el)}
-                onClick={() => setActive(i)}
                 style={{
-                  padding: '52px 0',
-                  borderBottom: i < items.length - 1 ? `1px solid ${C.border}` : 'none',
-                  paddingLeft: 24,
-                  position: 'relative',
-                  cursor: 'default',
-                  transition: 'opacity 0.4s ease',
-                  opacity: active === i ? 1 : 0.3,
+                  position: 'absolute',
+                  inset: 0,
+                  opacity: active === i ? 1 : 0,
+                  transition: 'opacity 0.6s ease',
+                  pointerEvents: active === i ? 'auto' : 'none',
                 }}
               >
-                {/* Active left bar */}
-                <div style={{
-                  position: 'absolute',
-                  left: 0, top: 52, bottom: 52,
-                  width: 2,
-                  borderRadius: 1,
-                  background: it.accent,
-                  opacity: active === i ? 1 : 0,
-                  transition: 'opacity 0.4s ease',
-                }} />
-                <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1.5, fontWeight: 600, marginBottom: 14 }}>{it.kicker}</div>
-                <h3 style={{ margin: '0 0 14px', fontFamily: fontDisplay, fontSize: 34, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
-                <p style={{ margin: 0, fontFamily: fontBody, fontSize: 15, lineHeight: 1.7, color: C.inkDim, maxWidth: 420 }}>{it.body}</p>
+                <IPhone src={it.src} width={300} eager={i === 0} />
               </div>
             ))}
           </div>
 
-          {/* Right: sticky phone */}
-          <div style={{
-            width: 280,
-            flexShrink: 0,
-            position: 'sticky',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            alignSelf: 'flex-start',
-            marginTop: '25vh',
-          }}>
-            <div style={{ position: 'relative' }}>
-              {items.map((it, i) => (
-                <div key={it.kicker} style={{
-                  position: i === 0 ? 'relative' : 'absolute',
-                  inset: 0,
-                  opacity: active === i ? 1 : 0,
-                  transition: 'opacity 0.55s ease',
-                  pointerEvents: active === i ? 'auto' : 'none',
-                }}>
-                  <IPhone src={it.src} width={280} eager={i === 0} />
-                </div>
-              ))}
-            </div>
-
-            {/* Dot indicators */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 28 }}>
-              {items.map((it, i) => (
-                <div
-                  key={i}
-                  onClick={() => setActive(i)}
-                  style={{
-                    width: active === i ? 22 : 7,
-                    height: 7,
-                    borderRadius: 4,
-                    background: active === i ? it.accent : 'rgba(255,255,255,0.18)',
-                    transition: 'all 0.35s ease',
-                    cursor: 'pointer',
-                  }}
-                />
-              ))}
-            </div>
+          {/* Dot indicators */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24 }}>
+            {items.map((it, i) => (
+              <div
+                key={i}
+                onClick={() => setActive(i)}
+                style={{
+                  width: active === i ? 22 : 7,
+                  height: 7,
+                  borderRadius: 4,
+                  background: active === i ? it.accent : 'rgba(255,255,255,0.18)',
+                  transition: 'all 0.35s ease',
+                  cursor: 'pointer',
+                }}
+              />
+            ))}
           </div>
-
         </div>
+
       </div>
     </section>
   );
