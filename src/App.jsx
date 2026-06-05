@@ -602,33 +602,58 @@ function Tracks() {
     return () => observers.forEach((o) => o && o.disconnect());
   }, [isMobile]);
 
-  // ── Mobile: simple stacked cards (unchanged feel) ──
+  // ── Mobile: large visual cards ──
   if (isMobile) {
     return (
-      <section style={{ padding: '64px 20px', borderTop: `1px solid ${C.border}` }}>
-        <div style={{ maxWidth: 600, margin: '0 auto' }}>
+      <section style={{ padding: '64px 0', borderTop: `1px solid ${C.border}` }}>
+        <div style={{ padding: '0 20px' }}>
           <SectionHeader
             kicker="WHAT IT WATCHES"
             title={[{ t: 'Four quiet signals.\n' }, { t: 'No journaling required.', italic: true }]}
             sub="Apple Watch and Screen Time API do the work in the background. You just live your day."
           />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 40 }}>
-            {items.map((it) => (
-              <div key={it.kicker} style={{
-                border: `1px solid ${C.border}`, borderRadius: 24,
-                background: C.bgAlt, padding: 24, display: 'flex', flexDirection: 'column', gap: 16,
-                position: 'relative', overflow: 'hidden',
-              }}>
-                <div style={{ position: 'absolute', top: -1, left: 24, width: 40, height: 2, background: it.accent }} />
-                <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1, fontWeight: 600 }}>{it.kicker}</div>
-                <h3 style={{ margin: 0, fontFamily: fontDisplay, fontSize: 24, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>{it.title}</h3>
-                <p style={{ margin: 0, fontFamily: fontBody, fontSize: 13.5, lineHeight: 1.55, color: C.inkDim }}>{it.body}</p>
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
-                  <IPhone src={it.src} width={160} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 48 }}>
+          {items.map((it, i) => (
+            <div key={it.kicker} style={{
+              position: 'relative',
+              overflow: 'hidden',
+              background: C.bgAlt,
+              borderTop: `1px solid ${C.border}`,
+              borderBottom: i === items.length - 1 ? `1px solid ${C.border}` : 'none',
+            }}>
+              {/* Accent top bar */}
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0,
+                height: 2, background: it.accent,
+              }} />
+
+              {/* Text block */}
+              <div style={{ padding: '36px 24px 28px' }}>
+                <div style={{ fontFamily: fontMono, fontSize: 11, color: it.accent, letterSpacing: 1.5, fontWeight: 600, marginBottom: 12 }}>
+                  {it.kicker}
                 </div>
+                <h3 style={{ margin: '0 0 12px', fontFamily: fontDisplay, fontSize: 30, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>
+                  {it.title}
+                </h3>
+                <p style={{ margin: 0, fontFamily: fontBody, fontSize: 14.5, lineHeight: 1.65, color: C.inkDim }}>
+                  {it.body}
+                </p>
               </div>
-            ))}
-          </div>
+
+              {/* Full-width phone screenshot — large and proud */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-end',
+                padding: '0 40px',
+                background: `linear-gradient(to bottom, ${C.bgAlt}, ${C.bg})`,
+                minHeight: 340,
+              }}>
+                <IPhone src={it.src} width={220} style={{ marginBottom: -20 }} />
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     );
