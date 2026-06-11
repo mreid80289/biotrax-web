@@ -1756,7 +1756,7 @@ function Waitlist() {
       <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: isMobile ? 18 : 24, position: 'relative' }}>
         <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1.2, fontWeight: 600 }}>JOIN THE WAITLIST</div>
         <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 44 : 80, fontWeight: 400, lineHeight: 0.98, letterSpacing: isMobile ? -0.8 : -1.5, color: C.ink }}>
-          Early access is <span style={{ fontStyle: 'italic', color: C.green }}>opening now.</span>
+          Early access is <span style={{ fontStyle: 'italic', color: C.green }}>opening soon.</span>
         </h2>
         <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, color: C.inkDim, maxWidth: 480 }}>
           Free during beta. iPhone + Apple Watch required. We'll write before billing ever starts.
