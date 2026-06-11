@@ -986,6 +986,136 @@ function Caregivers() {
   );
 }
 
+// ─────────────────────────── Mid-page Waitlist CTA ───────────────────────────
+function MidWaitlist() {
+  const isMobile = useIsMobile();
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || submitting) return;
+    const trimmed = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmed) || trimmed.length > 254) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '6a1edf3e-d02b-42eb-ad05-a5eed821db50',
+          email: trimmed,
+          subject: 'BioTrax — New waitlist signup (mid-page)',
+          from_name: 'BioTrax Waitlist',
+          source: 'biotrax-web — mid-page CTA',
+          submitted_at: new Date().toISOString(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) { setSubmitted(true); return; }
+      setError(data.message || 'Something went wrong. Please try again.');
+    } catch {
+      setError('Could not reach the signup service. Please check your connection.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <section style={{
+      padding: isMobile ? '48px 20px' : '80px 48px',
+      borderTop: `1px solid ${C.border}`,
+      background: C.bgAlt,
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Subtle green glow */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 50% 70% at 50% 50%, rgba(52,211,153,0.10), transparent 65%)',
+      }} />
+      <div style={{
+        maxWidth: 680,
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        gap: isMobile ? 24 : 48,
+        position: 'relative',
+      }}>
+        {/* Left: copy */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: fontMono, fontSize: 11, color: C.green, letterSpacing: 1.2, fontWeight: 600, marginBottom: 10 }}>
+            FREE DURING BETA
+          </div>
+          <div style={{ fontFamily: fontDisplay, fontSize: isMobile ? 28 : 36, fontWeight: 400, lineHeight: 1.05, letterSpacing: -0.5, color: C.ink }}>
+            Convinced? <span style={{ fontStyle: 'italic', color: C.green }}>Reserve your spot.</span>
+          </div>
+          <div style={{ fontFamily: fontBody, fontSize: 14, color: C.inkDim, marginTop: 8, lineHeight: 1.6 }}>
+            iPhone + Apple Watch required. No credit card, no commitment.
+          </div>
+        </div>
+
+        {/* Right: form */}
+        <div style={{ flexShrink: 0, width: isMobile ? '100%' : 320 }}>
+          {submitted ? (
+            <div style={{
+              padding: '16px 24px', borderRadius: 14,
+              border: `1px solid rgba(52,211,153,0.4)`,
+              background: 'rgba(52,211,153,0.06)',
+              fontFamily: fontBody, fontSize: 15, color: C.green, fontWeight: 500,
+              textAlign: 'center',
+            }}>
+              You're on the list. ✓
+            </div>
+          ) : (
+            <>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 8, width: '100%' }}>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (error) setError(''); }}
+                  required
+                  disabled={submitting}
+                  style={{
+                    flex: 1, padding: '13px 18px', borderRadius: 999,
+                    border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : C.borderStrong}`,
+                    background: 'rgba(255,255,255,0.03)',
+                    fontSize: 14, color: C.ink, fontFamily: fontBody, outline: 'none',
+                    opacity: submitting ? 0.6 : 1,
+                    minWidth: 0,
+                  }}
+                />
+                <button type="submit" disabled={submitting} style={{
+                  background: C.green, color: '#04201a', border: 'none',
+                  padding: '13px 20px', borderRadius: 999, fontSize: 14, fontWeight: 600,
+                  cursor: submitting ? 'wait' : 'pointer', fontFamily: fontBody,
+                  flexShrink: 0,
+                  opacity: submitting ? 0.7 : 1,
+                }}>
+                  {submitting ? '…' : 'Join →'}
+                </button>
+              </form>
+              {error && (
+                <div style={{ fontFamily: fontBody, fontSize: 12.5, color: '#fca5a5', marginTop: 8 }}>
+                  {error}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─────────────────────────── Score Playground ───────────────────────────
 function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 function tierForSleep(v)  { return v >= 60 ? C.green : v >= 40 ? C.amber : '#ef4444'; }
@@ -1626,7 +1756,7 @@ function Waitlist() {
       <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: isMobile ? 18 : 24, position: 'relative' }}>
         <div style={{ fontFamily: fontMono, fontSize: 12, color: C.green, letterSpacing: 1.2, fontWeight: 600 }}>JOIN THE WAITLIST</div>
         <h2 style={{ margin: 0, fontFamily: fontDisplay, fontSize: isMobile ? 44 : 80, fontWeight: 400, lineHeight: 0.98, letterSpacing: isMobile ? -0.8 : -1.5, color: C.ink }}>
-          The next thousand seats <span style={{ fontStyle: 'italic', color: C.green }}>open in spring.</span>
+          Early access is <span style={{ fontStyle: 'italic', color: C.green }}>opening now.</span>
         </h2>
         <p style={{ margin: 0, fontFamily: fontBody, fontSize: isMobile ? 15 : 16, color: C.inkDim, maxWidth: 480 }}>
           Free during beta. iPhone + Apple Watch required. We'll write before billing ever starts.
@@ -1835,6 +1965,7 @@ function Home() {
       <HowItWorks />
       <StoryBridge>See it for yourself.</StoryBridge>
       <ScorePlayground />
+      <MidWaitlist />
       <StressSection />
       <StoryBridge>And someone in your corner gets the signal first.</StoryBridge>
       <CoachSection />
