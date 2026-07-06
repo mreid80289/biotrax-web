@@ -521,46 +521,52 @@ function Hero({ headline }) {
           }}>
             {headline.sub}
           </p>
-          <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
-              <a
-                href="https://apps.apple.com/se/app/biotrax-sense/id6756967227?l=en-GB"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  background: '#000', color: '#fff',
-                  textDecoration: 'none',
-                  padding: '12px 22px', borderRadius: 14, fontSize: 15, fontWeight: 600,
-                  fontFamily: fontBody,
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  boxShadow: `0 0 32px rgba(52,211,153,0.25)`,
-                }}>
-                <svg width="22" height="22" viewBox="0 0 170 170" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 16, alignItems: 'flex-start' }}>
+            {/* App Store badge */}
+            <a
+              href="https://apps.apple.com/se/app/biotrax-sense/id6756967227?l=en-GB"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                background: '#000', color: '#fff',
+                textDecoration: 'none',
+                padding: '12px 22px', borderRadius: 14,
+                fontFamily: fontBody,
+                border: '1px solid rgba(255,255,255,0.15)',
+                boxShadow: `0 0 32px rgba(52,211,153,0.25)`,
+              }}>
+              <svg width="22" height="22" viewBox="0 0 170 170" fill="white" xmlns="http://www.w3.org/2000/svg">
   <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.197-2.12-9.973-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.267 2.13-9.508 3.24-12.74 3.35-4.93.21-9.84-1.96-14.75-6.52-3.13-2.73-7.05-7.41-11.76-14.04-5.04-7.08-9.19-15.29-12.46-24.65-3.5-10.11-5.25-19.9-5.25-29.38 0-10.86 2.35-20.22 7.06-28.07 3.7-6.3 8.63-11.27 14.82-14.93 6.19-3.66 12.87-5.53 20.07-5.65 3.94 0 9.11 1.22 15.53 3.61 6.4 2.4 10.51 3.62 12.31 3.62 1.35 0 5.92-1.42 13.68-4.26 7.33-2.64 13.52-3.73 18.6-3.29 13.74 1.11 24.07 6.52 30.96 16.27-12.28 7.44-18.35 17.86-18.23 31.22.11 10.41 3.89 19.07 11.31 25.94 3.36 3.19 7.12 5.66 11.32 7.41-.91 2.63-1.87 5.15-2.89 7.56zM119.11 7.24c0 8.16-2.98 15.78-8.92 22.83-7.17 8.38-15.85 13.22-25.25 12.46a25.4 25.4 0 0 1-.19-3.1c0-7.83 3.41-16.21 9.47-23.06 3.02-3.47 6.86-6.35 11.51-8.64 4.64-2.26 9.03-3.51 13.16-3.73.12 1.08.17 2.17.22 3.24z"/>
 </svg>
-                <div>
-                  <div style={{ fontSize: 10, opacity: 0.7, lineHeight: 1, marginBottom: 2 }}>Download on the</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>App Store</div>
-                </div>
-              </a>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontFamily: fontMono, fontSize: 10.5, color: C.green,
-                letterSpacing: 0.5, fontWeight: 600,
-              }}>
-                <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
-                FREE PRE-RELEASE · SWEDEN ONLY · FIRST 45 DAYS
+              <div>
+                <div style={{ fontSize: 10, opacity: 0.7, lineHeight: 1, marginBottom: 2 }}>Download on the</div>
+                <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>App Store</div>
               </div>
+            </a>
+
+            {/* Sweden notice */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              fontFamily: fontMono, fontSize: 10.5, color: C.green,
+              letterSpacing: 0.5, fontWeight: 600,
+            }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
+              FREE PRE-RELEASE · SWEDEN ONLY · FIRST 45 DAYS
             </div>
+
+            {/* Subtle divider */}
+            <div style={{ width: 40, height: 1, background: C.border }} />
+
+            {/* See how it works — same height as badge, more subtle */}
             <button
               onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
-                background: 'transparent', color: C.ink,
-                border: `1px solid ${C.borderStrong}`,
-                padding: '14px 24px', borderRadius: 999, fontSize: 15, fontWeight: 500,
-                cursor: 'pointer', fontFamily: fontBody,
-              }}>See how it works</button>
+                background: 'transparent', color: C.inkDim,
+                border: `1px solid ${C.border}`,
+                padding: '12px 22px', borderRadius: 14, fontSize: 13, fontWeight: 400,
+                cursor: 'pointer', fontFamily: fontBody, letterSpacing: 0.1,
+              }}>See how it works →</button>
           </div>
           <div style={{ display: 'flex', gap: isMobile ? 20 : 28, marginTop: 16, paddingTop: 24, borderTop: `1px solid ${C.border}` }}>
             {[
