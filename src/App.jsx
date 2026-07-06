@@ -356,14 +356,21 @@ function Nav() {
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button
-              onClick={() => goToAnchor('waitlist')}
+            <a
+              href="https://apps.apple.com/se/app/biotrax-sense/id6756967227?l=en-GB"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
+                display: 'flex', alignItems: 'center', gap: 8,
                 background: C.green, color: '#04201a',
-                border: 'none', padding: '9px 18px', borderRadius: 999,
-                fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
+                textDecoration: 'none',
+                padding: '9px 18px', borderRadius: 999,
+                fontSize: 13.5, fontWeight: 600,
                 fontFamily: fontBody,
-              }}>Join Waitlist</button>
+              }}>
+              <svg width="14" height="14" viewBox="0 0 814 1000" fill="#04201a"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.5-155.5-122.4c-58.7-101.8-106.7-278.7-106.7-448.3 0-244.3 155.5-373.5 308.5-373.5 81.5 0 149.5 42.8 200.5 42.8 48.5 0 124.8-45.4 217.5-45.4z"/></svg>
+              Download
+            </a>
           </div>
         </>
       )}
@@ -434,16 +441,18 @@ function Nav() {
                 }}>{l}</a>
             )
           )}
-          <button
-            onClick={() => goToAnchor('waitlist')}
+          <a
+            href="https://apps.apple.com/se/app/biotrax-sense/id6756967227?l=en-GB"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
-              marginTop: 16,
+              marginTop: 16, display: 'block', textAlign: 'center', textDecoration: 'none',
               background: C.green, color: '#04201a',
-              border: 'none', padding: '16px 24px', borderRadius: 999,
-              fontSize: 16, fontWeight: 600, cursor: 'pointer',
+              padding: '16px 24px', borderRadius: 999,
+              fontSize: 16, fontWeight: 600,
               fontFamily: fontBody,
               boxShadow: `0 0 32px rgba(52,211,153,0.35)`,
-            }}>Join the Waitlist →</button>
+            }}>Download on App Store →</a>
         </div>
       )}
     </nav>
@@ -511,14 +520,35 @@ function Hero({ headline }) {
             {headline.sub}
           </p>
           <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
-            <button
-              onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{
-                background: C.green, color: '#04201a', border: 'none',
-                padding: '14px 24px', borderRadius: 999, fontSize: 15, fontWeight: 600,
-                cursor: 'pointer', fontFamily: fontBody,
-                boxShadow: `0 0 32px rgba(52,211,153,0.35)`,
-              }}>Join the Waitlist →</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
+              <a
+                href="https://apps.apple.com/se/app/biotrax-sense/id6756967227?l=en-GB"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  background: '#000', color: '#fff',
+                  textDecoration: 'none',
+                  padding: '12px 22px', borderRadius: 14, fontSize: 15, fontWeight: 600,
+                  fontFamily: fontBody,
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: `0 0 32px rgba(52,211,153,0.25)`,
+                }}>
+                <svg width="20" height="20" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.5-155.5-122.4c-58.7-101.8-106.7-278.7-106.7-448.3 0-244.3 155.5-373.5 308.5-373.5 81.5 0 149.5 42.8 200.5 42.8 48.5 0 124.8-45.4 217.5-45.4z"/></svg>
+                <div>
+                  <div style={{ fontSize: 10, opacity: 0.7, lineHeight: 1, marginBottom: 2 }}>Download on the</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>App Store</div>
+                </div>
+              </a>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                fontFamily: fontMono, fontSize: 10.5, color: C.green,
+                letterSpacing: 0.5, fontWeight: 600,
+              }}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
+                FREE PRE-RELEASE · SWEDEN ONLY · FIRST 45 DAYS
+              </div>
+            </div>
             <button
               onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
